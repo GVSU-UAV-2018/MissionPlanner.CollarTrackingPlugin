@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MissionPlanner.CollarTrackingUI", "MissionPlanner.CollarTrackingUI\MissionPlanner.CollarTrackingUI.csproj", "{24D93680-15F4-443B-A8E5-ED4E945E3F93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MissionPlanner.MavLinkRDFCommunication", "MissionPlanner.MavLinkRDFCommunication\MissionPlanner.MavLinkRDFCommunication.csproj", "{B5878ABE-837C-40FE-A8B0-FC901E520B4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{24D93680-15F4-443B-A8E5-ED4E945E3F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24D93680-15F4-443B-A8E5-ED4E945E3F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24D93680-15F4-443B-A8E5-ED4E945E3F93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5878ABE-837C-40FE-A8B0-FC901E520B4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5878ABE-837C-40FE-A8B0-FC901E520B4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5878ABE-837C-40FE-A8B0-FC901E520B4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5878ABE-837C-40FE-A8B0-FC901E520B4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,8 +8,16 @@ using System.Windows.Forms;
 
 namespace MissionPlanner.CollarTrackingUI
 {
-    public partial class CollarTrackingControl: UserControl
+    public partial class CollarTrackingControl : UserControl
     {
+        /// <summary>
+        /// Gets/Sets the desired collar frequency
+        /// to search for.
+        /// </summary>
+        [Description("The selected Collar Frequency to be scanned."),Category("Data")] 
+        public float SelectedCollarFrequency
+        { get; set; }
+
         public CollarTrackingControl()
         {
             InitializeComponent();
