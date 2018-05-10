@@ -35,7 +35,7 @@
             this.CollarTrackingFrequencyTextBox = new System.Windows.Forms.TextBox();
             this.MHzFrequencyLabel = new System.Windows.Forms.Label();
             this.CollarTrackingStartScanButton = new System.Windows.Forms.Button();
-            this.ColarrTrackingCancelScanButton = new System.Windows.Forms.Button();
+            this.CollarTrackingCancelScanButton = new System.Windows.Forms.Button();
             this.CollarTrackingSetFrequencyButton = new System.Windows.Forms.Button();
             this.collarTrackingRadar1 = new MissionPlanner.CollarTrackingUI.CollarTrackingRadar();
             this.CollarTrackingControlPanel.SuspendLayout();
@@ -136,7 +136,7 @@
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingFrequencyTextBox, 0, 1);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.MHzFrequencyLabel, 15, 1);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingStartScanButton, 0, 7);
-            this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.ColarrTrackingCancelScanButton, 0, 11);
+            this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingCancelScanButton, 0, 11);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingSetFrequencyButton, 0, 3);
             this.CollarTrackingControlGroupBoxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CollarTrackingControlGroupBoxPanel.Location = new System.Drawing.Point(3, 16);
@@ -167,6 +167,7 @@
             // 
             // CollarFrequencyLabel
             // 
+            this.CollarFrequencyLabel.AutoEllipsis = true;
             this.CollarFrequencyLabel.AutoSize = true;
             this.CollarTrackingControlGroupBoxPanel.SetColumnSpan(this.CollarFrequencyLabel, 20);
             this.CollarFrequencyLabel.Location = new System.Drawing.Point(3, 0);
@@ -212,18 +213,18 @@
             this.CollarTrackingStartScanButton.UseVisualStyleBackColor = true;
             this.CollarTrackingStartScanButton.Click += new System.EventHandler(this.CollarTrackingStartScanButton_Click);
             // 
-            // ColarrTrackingCancelScanButton
+            // CollarTrackingCancelScanButton
             // 
-            this.CollarTrackingControlGroupBoxPanel.SetColumnSpan(this.ColarrTrackingCancelScanButton, 20);
-            this.ColarrTrackingCancelScanButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ColarrTrackingCancelScanButton.Location = new System.Drawing.Point(3, 168);
-            this.ColarrTrackingCancelScanButton.Name = "ColarrTrackingCancelScanButton";
-            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.ColarrTrackingCancelScanButton, 3);
-            this.ColarrTrackingCancelScanButton.Size = new System.Drawing.Size(156, 39);
-            this.ColarrTrackingCancelScanButton.TabIndex = 4;
-            this.ColarrTrackingCancelScanButton.Text = "Cancel Current Scan";
-            this.ColarrTrackingCancelScanButton.UseVisualStyleBackColor = true;
-            this.ColarrTrackingCancelScanButton.Click += new System.EventHandler(this.ColarrTrackingCancelScanButton_Click);
+            this.CollarTrackingControlGroupBoxPanel.SetColumnSpan(this.CollarTrackingCancelScanButton, 20);
+            this.CollarTrackingCancelScanButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CollarTrackingCancelScanButton.Location = new System.Drawing.Point(3, 168);
+            this.CollarTrackingCancelScanButton.Name = "CollarTrackingCancelScanButton";
+            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingCancelScanButton, 3);
+            this.CollarTrackingCancelScanButton.Size = new System.Drawing.Size(156, 39);
+            this.CollarTrackingCancelScanButton.TabIndex = 4;
+            this.CollarTrackingCancelScanButton.Text = "Cancel Current Scan";
+            this.CollarTrackingCancelScanButton.UseVisualStyleBackColor = true;
+            this.CollarTrackingCancelScanButton.Click += new System.EventHandler(this.CollarTrackingCancelScanButton_Click);
             // 
             // CollarTrackingSetFrequencyButton
             // 
@@ -274,7 +275,7 @@
         private System.Windows.Forms.TextBox CollarTrackingFrequencyTextBox;
         private System.Windows.Forms.Label MHzFrequencyLabel;
         private System.Windows.Forms.Button CollarTrackingStartScanButton;
-        private System.Windows.Forms.Button ColarrTrackingCancelScanButton;
+        private System.Windows.Forms.Button CollarTrackingCancelScanButton;
         private System.Windows.Forms.Button CollarTrackingSetFrequencyButton;
         private MissionPlanner.CollarTrackingUI.CollarTrackingRadar collarTrackingRadar1;
     }
