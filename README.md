@@ -1,12 +1,12 @@
-# MissionPlanner.CollarTrackingUI
+# MissionPlanner.CollarTrackingPlugin
 Repo for Mission Planner Plug-In
 
 Compile solution.
 
 Add:
-MissionPlanner.CollarTrackingUI.dll
-MissionPlanner.CollarTrackingUI.dll.config
-MissionPlanner.CollarTrackingUI.pdb
+MissionPlanner.CollarTrackingPlugin.dll
+MissionPlanner.CollarTrackingPlugin.dll.config
+MissionPlanner.CollarTrackingPlugin.pdb
 
 To:
 C:\Program Files (x86)\Mission Planner\plugins
