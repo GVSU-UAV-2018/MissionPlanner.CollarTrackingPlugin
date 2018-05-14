@@ -14,7 +14,7 @@ namespace MissionPlanner.CollarTrackingUI
         /// Gets/Sets the desired collar frequency
         /// to search for.
         /// </summary>
-        [Description("The selected Collar Frequency to be scanned."),Category("Data")] 
+        [Description("The selected collar frequency to be scanned."),Category("Data")] 
         public float SelectedCollarFrequency
         { get; set; }
 

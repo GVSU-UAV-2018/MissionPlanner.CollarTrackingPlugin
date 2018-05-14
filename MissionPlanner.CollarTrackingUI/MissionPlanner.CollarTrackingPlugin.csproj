@@ -63,18 +63,20 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="MavLinkRDFCommunication\MavLinkRDFCommunication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RadiationPatternMatching\RadiationPatternMatching.cs" />
     <Compile Include="TrackingControlPlugin.cs" />
-    <Compile Include="UserControls\CollarTrackingControl.cs">
+    <Compile Include="TrackingUserControls\CollarTrackingControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControls\CollarTrackingControl.Designer.cs">
+    <Compile Include="TrackingUserControls\CollarTrackingControl.Designer.cs">
       <DependentUpon>CollarTrackingControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\CollarTrackingRadar.cs">
+    <Compile Include="TrackingUserControls\CollarTrackingRadar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControls\CollarTrackingRadar.Designer.cs">
+    <Compile Include="TrackingUserControls\CollarTrackingRadar.Designer.cs">
       <DependentUpon>CollarTrackingRadar.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Form1.resx">
@@ -89,7 +91,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="UserControls\CollarTrackingControl.resx">
+    <EmbeddedResource Include="TrackingUserControls\CollarTrackingControl.resx">
       <DependentUpon>CollarTrackingControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
