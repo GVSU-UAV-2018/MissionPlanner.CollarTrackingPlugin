@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MissionPlanner.CollarTrackingUI.MavLinkRDFCommunication
 {
-    class MavLinkRDFCommunication
+    static class MavLinkRDFCommunication
     {
     }
 }

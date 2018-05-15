@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MissionPlanner.CollarTrackingUI.RadiationPatternMatching
 {
-    class RadiationPatternMatching
+    static class RadiationPatternMatching
     {
     }
 }
