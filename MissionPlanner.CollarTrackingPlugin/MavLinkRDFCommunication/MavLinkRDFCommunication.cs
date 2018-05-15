@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MissionPlanner.CollarTrackingUI.MavLinkRDFCommunication
+namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 {
     static class MavLinkRDFCommunication
     {

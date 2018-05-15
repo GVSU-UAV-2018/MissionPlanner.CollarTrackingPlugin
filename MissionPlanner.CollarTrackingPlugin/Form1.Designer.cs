@@ -1,4 +1,4 @@
-﻿namespace MissionPlanner.CollarTrackingUI
+﻿namespace MissionPlanner.CollarTrackingPlugin
 {
     partial class Form1
     {

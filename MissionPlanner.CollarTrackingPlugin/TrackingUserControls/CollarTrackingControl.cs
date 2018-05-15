@@ -6,7 +6,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace MissionPlanner.CollarTrackingUI
+namespace MissionPlanner.CollarTrackingPlugin
 {
     public partial class CollarTrackingControl : UserControl
     {

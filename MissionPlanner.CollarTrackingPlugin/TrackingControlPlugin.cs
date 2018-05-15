@@ -7,7 +7,7 @@ using GMap.NET.WindowsForms.Markers;
 using MissionPlanner;
 using MissionPlanner.Utilities;
 
-namespace MissionPlanner.CollarTrackingUI
+namespace MissionPlanner.CollarTrackingPlugin
 {
     public class TrackingControlPlugin : MissionPlanner.Plugin.Plugin
     {
@@ -43,6 +43,11 @@ namespace MissionPlanner.CollarTrackingUI
         }
 
         public override bool Loop()
+        {
+            return true;
+        }
+
+        public override bool SetupUI(int gui = 0, object data = null)
         {
             return true;
         }
