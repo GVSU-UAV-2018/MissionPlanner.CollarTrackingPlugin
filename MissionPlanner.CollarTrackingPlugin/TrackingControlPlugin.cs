@@ -21,13 +21,11 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         public override bool Init()
         {
-            f.Text = "Test";
-            f.Size = new System.Drawing.Size(500, 500);
             CollarTrackingControl ctc = new CollarTrackingControl();
-            f.Controls.Add(ctc);
             ctc.Dock = DockStyle.Fill;
-
-            f.Show();
+            TabPage p = new TabPage("Collar Tracking");
+            p.Controls.Add(ctc);
+            MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Add(p);
             return true;
         }
 
@@ -49,6 +47,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         public override bool SetupUI(int gui = 0, object data = null)
         {
+            MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Add("Hello World!");
             return true;
         }
     }

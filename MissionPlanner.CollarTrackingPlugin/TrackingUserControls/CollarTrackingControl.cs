@@ -31,8 +31,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         private void CollarTrackingSetFrequencyButton_Click(object sender, EventArgs e)
         {
-            this.CollarFrequencyLabel.Text = "Collar Freq: " + 
-                CollarTrackingFrequencyTextBox.Text + " MHz";
+            this.CollarFrequencyLabel.Text = CollarTrackingFrequencyTextBox.Text + " MHz";
         }
 
         private void CollarTrackingStartScanButton_Click(object sender, EventArgs e)
