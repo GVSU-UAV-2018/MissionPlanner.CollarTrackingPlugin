@@ -34,10 +34,11 @@
             // 
             // CollarTrackingRadarPictureBox
             // 
-            this.CollarTrackingRadarPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CollarTrackingRadarPictureBox.Location = new System.Drawing.Point(0, 0);
+            this.CollarTrackingRadarPictureBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.CollarTrackingRadarPictureBox.Location = new System.Drawing.Point(75, 41);
+            this.CollarTrackingRadarPictureBox.MaximumSize = new System.Drawing.Size(302, 302);
             this.CollarTrackingRadarPictureBox.Name = "CollarTrackingRadarPictureBox";
-            this.CollarTrackingRadarPictureBox.Size = new System.Drawing.Size(428, 324);
+            this.CollarTrackingRadarPictureBox.Size = new System.Drawing.Size(302, 302);
             this.CollarTrackingRadarPictureBox.TabIndex = 0;
             this.CollarTrackingRadarPictureBox.TabStop = false;
             // 
@@ -47,7 +48,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.CollarTrackingRadarPictureBox);
             this.Name = "CollarTrackingRadar";
-            this.Size = new System.Drawing.Size(428, 324);
+            this.Size = new System.Drawing.Size(451, 393);
             ((System.ComponentModel.ISupportInitialize)(this.CollarTrackingRadarPictureBox)).EndInit();
             this.ResumeLayout(false);
 

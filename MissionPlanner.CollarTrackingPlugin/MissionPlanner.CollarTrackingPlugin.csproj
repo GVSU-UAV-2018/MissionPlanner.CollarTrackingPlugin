@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{24D93680-15F4-443B-A8E5-ED4E945E3F93}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MissionPlanner.CollarTrackingUI</RootNamespace>
-    <AssemblyName>MissionPlanner.CollarTrackingUI</AssemblyName>
+    <RootNamespace>MissionPlanner.CollarTrackingPlugin</RootNamespace>
+    <AssemblyName>MissionPlanner.CollarTrackingPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -90,9 +90,13 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="TrackingUserControls\CollarTrackingControl.resx">
       <DependentUpon>CollarTrackingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrackingUserControls\CollarTrackingRadar.resx">
+      <DependentUpon>CollarTrackingRadar.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

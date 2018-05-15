@@ -88,11 +88,13 @@ namespace MissionPlanner.CollarTrackingUI
 
             //draw circle
             g.DrawEllipse(p, 0, 0, WIDTH, HEIGHT);  //bigger circle
-            g.DrawEllipse(p, 80, 80, WIDTH - 160, HEIGHT - 160);    //smaller circle
+            g.DrawEllipse(p, WIDTH / 8, HEIGHT / 8, (float)(WIDTH * 0.75), (float)(HEIGHT * 0.75));    //smaller circle
 
             //draw perpendicular line
             g.DrawLine(p, new Point(cx, 0), new Point(cx, HEIGHT)); // UP-DOWN
             g.DrawLine(p, new Point(0, cy), new Point(WIDTH, cy)); //LEFT-RIGHT
+            g.DrawLine(p, new Point((int)(cx + 0.707*cx), (int)(0.15 * HEIGHT)), new Point((int)(cx - .707*cx), (int)(0.85 * HEIGHT))); // UP-LEFT to DOWN-RIGHT
+            g.DrawLine(p, new Point((int)(cx + 0.707 * cx), (int)(0.85 * HEIGHT)), new Point((int)(cx - .707 * cx), (int)(0.15 * HEIGHT))); // UP-RIGHT to DOWN-LEFT
 
             //draw HAND
             g.DrawLine(new Pen(Color.Black, 1f), new Point(cx, cy), new Point(tx, ty));
