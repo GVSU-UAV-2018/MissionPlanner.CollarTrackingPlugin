@@ -13,7 +13,7 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingControl
 
         public static void ScanDirection(int degree)
         {
-            for (int i = 0; i < 1000000; i++) ;
+            for (int i = 0; i < 9000000; i++) ;
         }
     }
 }

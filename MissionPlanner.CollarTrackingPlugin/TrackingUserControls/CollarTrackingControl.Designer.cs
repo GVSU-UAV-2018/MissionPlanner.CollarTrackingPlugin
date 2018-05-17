@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint4 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 20D);
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint6 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 20D);
             this.CollarTrackingControlPanel = new System.Windows.Forms.TableLayoutPanel();
             this.CollarTrackingControlGroupBox = new System.Windows.Forms.GroupBox();
             this.CollarTrackingControlGroupBoxPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -40,10 +40,10 @@
             this.CollarTrackingStartScanButton = new System.Windows.Forms.Button();
             this.CollarTrackingCancelScanButton = new System.Windows.Forms.Button();
             this.CollarTrackingSetFrequencyButton = new System.Windows.Forms.Button();
+            this.CollarFrequencyLabel = new System.Windows.Forms.Label();
             this.CollarTrackingPolarChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.CollarTrackingScanInfoLabel = new System.Windows.Forms.Label();
             this.CollarScanProgressBar = new System.Windows.Forms.ProgressBar();
-            this.CollarFrequencyLabel = new System.Windows.Forms.Label();
             this.CollarTrackingControlPanel.SuspendLayout();
             this.CollarTrackingControlGroupBox.SuspendLayout();
             this.CollarTrackingControlGroupBoxPanel.SuspendLayout();
@@ -76,41 +76,31 @@
             this.CollarTrackingControlPanel.Controls.Add(this.CollarTrackingControlGroupBox, 0, 0);
             this.CollarTrackingControlPanel.Controls.Add(this.CollarTrackingPolarChart, 6, 0);
             this.CollarTrackingControlPanel.Controls.Add(this.CollarTrackingScanInfoLabel, 6, 19);
-            this.CollarTrackingControlPanel.Controls.Add(this.CollarScanProgressBar, 10, 19);
+            this.CollarTrackingControlPanel.Controls.Add(this.CollarScanProgressBar, 13, 19);
             this.CollarTrackingControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CollarTrackingControlPanel.Location = new System.Drawing.Point(0, 0);
             this.CollarTrackingControlPanel.Name = "CollarTrackingControlPanel";
             this.CollarTrackingControlPanel.RowCount = 20;
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263157F));
+            this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
             this.CollarTrackingControlPanel.Size = new System.Drawing.Size(597, 333);
             this.CollarTrackingControlPanel.TabIndex = 0;
             // 
@@ -154,7 +144,7 @@
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarFrequencyStaticLabel, 0, 0);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingFrequencyTextBox, 0, 2);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.MHzFrequencyLabel, 15, 2);
-            this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingStartScanButton, 0, 11);
+            this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingStartScanButton, 0, 10);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingCancelScanButton, 0, 15);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarTrackingSetFrequencyButton, 0, 4);
             this.CollarTrackingControlGroupBoxPanel.Controls.Add(this.CollarFrequencyLabel, 0, 1);
@@ -206,6 +196,7 @@
             this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingFrequencyTextBox, 2);
             this.CollarTrackingFrequencyTextBox.Size = new System.Drawing.Size(114, 20);
             this.CollarTrackingFrequencyTextBox.TabIndex = 1;
+            this.CollarTrackingFrequencyTextBox.TextChanged += new System.EventHandler(this.CollarTrackingFrequencyTextBox_TextChanged);
             // 
             // MHzFrequencyLabel
             // 
@@ -224,10 +215,11 @@
             // 
             this.CollarTrackingControlGroupBoxPanel.SetColumnSpan(this.CollarTrackingStartScanButton, 20);
             this.CollarTrackingStartScanButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CollarTrackingStartScanButton.Location = new System.Drawing.Point(3, 173);
+            this.CollarTrackingStartScanButton.Enabled = false;
+            this.CollarTrackingStartScanButton.Location = new System.Drawing.Point(3, 158);
             this.CollarTrackingStartScanButton.Name = "CollarTrackingStartScanButton";
-            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingStartScanButton, 4);
-            this.CollarTrackingStartScanButton.Size = new System.Drawing.Size(156, 54);
+            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingStartScanButton, 5);
+            this.CollarTrackingStartScanButton.Size = new System.Drawing.Size(156, 69);
             this.CollarTrackingStartScanButton.TabIndex = 3;
             this.CollarTrackingStartScanButton.Text = "Start Collar Frequency Scan";
             this.CollarTrackingStartScanButton.UseVisualStyleBackColor = true;
@@ -237,10 +229,11 @@
             // 
             this.CollarTrackingControlGroupBoxPanel.SetColumnSpan(this.CollarTrackingCancelScanButton, 20);
             this.CollarTrackingCancelScanButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CollarTrackingCancelScanButton.Enabled = false;
             this.CollarTrackingCancelScanButton.Location = new System.Drawing.Point(3, 233);
             this.CollarTrackingCancelScanButton.Name = "CollarTrackingCancelScanButton";
-            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingCancelScanButton, 4);
-            this.CollarTrackingCancelScanButton.Size = new System.Drawing.Size(156, 54);
+            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingCancelScanButton, 5);
+            this.CollarTrackingCancelScanButton.Size = new System.Drawing.Size(156, 72);
             this.CollarTrackingCancelScanButton.TabIndex = 4;
             this.CollarTrackingCancelScanButton.Text = "Cancel Current Scan";
             this.CollarTrackingCancelScanButton.UseVisualStyleBackColor = true;
@@ -252,57 +245,12 @@
             this.CollarTrackingSetFrequencyButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CollarTrackingSetFrequencyButton.Location = new System.Drawing.Point(3, 68);
             this.CollarTrackingSetFrequencyButton.Name = "CollarTrackingSetFrequencyButton";
-            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingSetFrequencyButton, 4);
-            this.CollarTrackingSetFrequencyButton.Size = new System.Drawing.Size(156, 54);
+            this.CollarTrackingControlGroupBoxPanel.SetRowSpan(this.CollarTrackingSetFrequencyButton, 5);
+            this.CollarTrackingSetFrequencyButton.Size = new System.Drawing.Size(156, 69);
             this.CollarTrackingSetFrequencyButton.TabIndex = 5;
             this.CollarTrackingSetFrequencyButton.Text = "Set Frequency";
             this.CollarTrackingSetFrequencyButton.UseVisualStyleBackColor = true;
             this.CollarTrackingSetFrequencyButton.Click += new System.EventHandler(this.CollarTrackingSetFrequencyButton_Click);
-            // 
-            // CollarTrackingPolarChart
-            // 
-            this.CollarTrackingPolarChart.BorderlineColor = System.Drawing.Color.Gray;
-            this.CollarTrackingPolarChart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea4.Name = "ChartArea1";
-            this.CollarTrackingPolarChart.ChartAreas.Add(chartArea4);
-            this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingPolarChart, 14);
-            this.CollarTrackingPolarChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CollarTrackingPolarChart.Location = new System.Drawing.Point(177, 3);
-            this.CollarTrackingPolarChart.Name = "CollarTrackingPolarChart";
-            this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingPolarChart, 19);
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
-            series4.IsVisibleInLegend = false;
-            series4.Name = "Series1";
-            series4.Points.Add(dataPoint4);
-            this.CollarTrackingPolarChart.Series.Add(series4);
-            this.CollarTrackingPolarChart.Size = new System.Drawing.Size(417, 298);
-            this.CollarTrackingPolarChart.TabIndex = 2;
-            this.CollarTrackingPolarChart.Text = "chart1";
-            // 
-            // CollarTrackingScanInfoLabel
-            // 
-            this.CollarTrackingScanInfoLabel.AutoSize = true;
-            this.CollarTrackingScanInfoLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingScanInfoLabel, 4);
-            this.CollarTrackingScanInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CollarTrackingScanInfoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CollarTrackingScanInfoLabel.ForeColor = System.Drawing.Color.White;
-            this.CollarTrackingScanInfoLabel.Location = new System.Drawing.Point(177, 304);
-            this.CollarTrackingScanInfoLabel.Name = "CollarTrackingScanInfoLabel";
-            this.CollarTrackingScanInfoLabel.Size = new System.Drawing.Size(110, 29);
-            this.CollarTrackingScanInfoLabel.TabIndex = 3;
-            this.CollarTrackingScanInfoLabel.Text = "Collar Scan:";
-            this.CollarTrackingScanInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // CollarScanProgressBar
-            // 
-            this.CollarTrackingControlPanel.SetColumnSpan(this.CollarScanProgressBar, 10);
-            this.CollarScanProgressBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CollarScanProgressBar.Location = new System.Drawing.Point(293, 307);
-            this.CollarScanProgressBar.Name = "CollarScanProgressBar";
-            this.CollarScanProgressBar.Size = new System.Drawing.Size(301, 23);
-            this.CollarScanProgressBar.TabIndex = 4;
             // 
             // CollarFrequencyLabel
             // 
@@ -316,6 +264,51 @@
             this.CollarFrequencyLabel.TabIndex = 6;
             this.CollarFrequencyLabel.Text = "None";
             this.CollarFrequencyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // CollarTrackingPolarChart
+            // 
+            this.CollarTrackingPolarChart.BorderlineColor = System.Drawing.Color.Gray;
+            this.CollarTrackingPolarChart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea6.Name = "ChartArea1";
+            this.CollarTrackingPolarChart.ChartAreas.Add(chartArea6);
+            this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingPolarChart, 14);
+            this.CollarTrackingPolarChart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CollarTrackingPolarChart.Location = new System.Drawing.Point(177, 3);
+            this.CollarTrackingPolarChart.Name = "CollarTrackingPolarChart";
+            this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingPolarChart, 19);
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
+            series6.IsVisibleInLegend = false;
+            series6.Name = "Series1";
+            series6.Points.Add(dataPoint6);
+            this.CollarTrackingPolarChart.Series.Add(series6);
+            this.CollarTrackingPolarChart.Size = new System.Drawing.Size(417, 298);
+            this.CollarTrackingPolarChart.TabIndex = 2;
+            this.CollarTrackingPolarChart.Text = "chart1";
+            // 
+            // CollarTrackingScanInfoLabel
+            // 
+            this.CollarTrackingScanInfoLabel.AutoSize = true;
+            this.CollarTrackingScanInfoLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingScanInfoLabel, 7);
+            this.CollarTrackingScanInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CollarTrackingScanInfoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CollarTrackingScanInfoLabel.ForeColor = System.Drawing.Color.White;
+            this.CollarTrackingScanInfoLabel.Location = new System.Drawing.Point(177, 304);
+            this.CollarTrackingScanInfoLabel.Name = "CollarTrackingScanInfoLabel";
+            this.CollarTrackingScanInfoLabel.Size = new System.Drawing.Size(197, 29);
+            this.CollarTrackingScanInfoLabel.TabIndex = 3;
+            this.CollarTrackingScanInfoLabel.Text = "Scan Status:";
+            this.CollarTrackingScanInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // CollarScanProgressBar
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.CollarScanProgressBar, 7);
+            this.CollarScanProgressBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CollarScanProgressBar.Location = new System.Drawing.Point(380, 307);
+            this.CollarScanProgressBar.Name = "CollarScanProgressBar";
+            this.CollarScanProgressBar.Size = new System.Drawing.Size(214, 23);
+            this.CollarScanProgressBar.TabIndex = 4;
             // 
             // CollarTrackingControl
             // 
