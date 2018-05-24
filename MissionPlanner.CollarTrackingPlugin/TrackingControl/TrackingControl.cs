@@ -8,12 +8,12 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingControl
 {
     static class TrackingControl
     {
-        public static float Frequency
+        public static double Frequency
         { get; set; }
 
         public static void ScanDirection(int degree)
         {
-            for (int i = 0; i < 9000000; i++) ;
+            for (long i = 0; i < 1000000000; i++) ;
         }
     }
 }

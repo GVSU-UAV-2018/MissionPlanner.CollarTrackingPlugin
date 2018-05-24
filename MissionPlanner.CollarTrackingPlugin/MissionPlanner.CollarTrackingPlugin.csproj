@@ -38,8 +38,16 @@
     <Reference Include="GMap.NET.Core">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\GMap.NET.Core.dll</HintPath>
     </Reference>
+    <Reference Include="MAVLink, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\MAVLink.dll</HintPath>
+    </Reference>
     <Reference Include="MissionPlanner">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\MissionPlanner.exe</HintPath>
+    </Reference>
+    <Reference Include="MissionPlanner.ArduPilot, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\MissionPlanner.ArduPilot.dll</HintPath>
     </Reference>
     <Reference Include="MissionPlanner.Utilities">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\MissionPlanner.Utilities.dll</HintPath>
