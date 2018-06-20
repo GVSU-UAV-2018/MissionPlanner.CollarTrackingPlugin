@@ -15,7 +15,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         private static byte RDF_SYS_ID = 255;
         private static byte RDF_COMP_ID = 0;
 
-        public static List<KeyValuePair<int, float>> RDFData;
+        public static List<KeyValuePair<int, float>> RDFData = new List<KeyValuePair<int, float>>();
         public static event EventHandler RDFDataReceived;
 
         /// <summary>

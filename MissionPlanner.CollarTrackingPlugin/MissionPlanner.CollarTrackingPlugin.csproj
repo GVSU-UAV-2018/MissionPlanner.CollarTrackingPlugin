@@ -82,7 +82,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadiationPatternMatching\RadiationPatternMatching.cs" />
     <Compile Include="TrackingControlPlugin.cs" />
-    <Compile Include="TrackingControl\TrackingControl.cs" />
     <Compile Include="TrackingUserControls\CollarTrackingControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

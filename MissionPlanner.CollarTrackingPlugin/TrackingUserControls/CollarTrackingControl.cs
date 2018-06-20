@@ -38,8 +38,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 CollarTrackingFrequencyTextBox.BackColor = Color.Green;
                 this.CollarFrequencyLabel.Text = CollarTrackingFrequencyTextBox.Text + " MHz";
                 SelectedCollarFrequency = Convert.ToDouble(this.CollarTrackingFrequencyTextBox.Text);
-                TrackingControl.TrackingControl.Frequency = SelectedCollarFrequency;
-                //MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency); Unlock for testing
+                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
                 this.CollarTrackingStartScanButton.Enabled = true;
             }
             else
@@ -58,44 +57,13 @@ namespace MissionPlanner.CollarTrackingPlugin
             //Clear all data contents before re-using
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
 
-            //this.CollarTrackingScanBackgroundWorker.RunWorkerAsync();//The big dance
+            //TO DO: Do actual scan commands
 
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
-            //this.CollarTrackingScanBackgroundWorker.CancelAsync();
-        }
-
-        private void CollarTrackingFrequencyTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CollarTrackingScanBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            /*for (int i = 0; i < DEGREES; i += DEGREE_INTERVAL)
-            {
-                if (this.CollarTrackingScanBackgroundWorker.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-                MissionPlanner.CollarTrackingPlugin.TrackingControl.TrackingControl.ScanDirection(i);
-                this.CollarTrackingScanBackgroundWorker.ReportProgress((int)(((float)i / DEGREES) * 100));
-            }*/
-        }
-
-        private void CollarTrackingScanBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            //this.CollarScanProgressBar.Value = e.ProgressPercentage;
-        }
-
-        private void CollarTrackingScanBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //this.CollarScanProgressBar.Value = 100;
-            //UnlockButtons(true);
-            // TODO: Do stuff on scan completion
+            //TO DO: Stop doing the commands
         }
 
         private void RDFData_Received(object o, EventArgs e)
@@ -104,6 +72,8 @@ namespace MissionPlanner.CollarTrackingPlugin
             this.CollarScanProgressBar.Value = MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Count / (DEGREES / DEGREE_INTERVAL);
 
             //rinse and repeat
+            //0 index for series because only one series is used
+            //for our needs
             CollarTrackingPolarChart.Series[0].Points.Clear();
             foreach(KeyValuePair<int, float> kvp in MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData)
             {
