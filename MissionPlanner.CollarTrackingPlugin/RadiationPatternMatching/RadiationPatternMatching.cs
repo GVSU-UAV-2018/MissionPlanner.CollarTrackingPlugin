@@ -8,5 +8,7 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
 {
     static class RadiationPatternMatching
     {
+        public static float DegreesFromNorth = 0.0F;
+        public static float Confidence = 0.0F;
     }
 }

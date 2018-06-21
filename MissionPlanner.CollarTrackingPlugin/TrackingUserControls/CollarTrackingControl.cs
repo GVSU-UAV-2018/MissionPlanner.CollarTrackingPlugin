@@ -6,6 +6,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace MissionPlanner.CollarTrackingPlugin
 {
@@ -87,6 +88,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             {
                 this.CollarScanProgressBar.Value = 100;
                 UnlockButtons(true);
+                LogScan();
                 //Hold drone
             }
         }
@@ -105,6 +107,21 @@ namespace MissionPlanner.CollarTrackingPlugin
             if (r.IsMatch(CollarTrackingFrequencyTextBox.Text))
                 isValidFrequency = true;
             return isValidFrequency;
+        }
+
+        private void LogScan()
+        {
+            const string FILE_NAME = "CollarLog.csv";
+            string appendedLine = CollarTrackingFrequencyTextBox.Text + "," +
+                RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
+                RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +
+                DateTime.Now.ToString();
+
+            if (!File.Exists(LOG_LOCATION + @"\" + FILE_NAME))
+                File.WriteAllText(LOG_LOCATION + @"\" + FILE_NAME,
+                    "Frequency,Degrees from North,Confidence,Date/Time");
+
+            File.AppendAllText(LOG_LOCATION + @"\" + FILE_NAME, appendedLine);
         }
 
         private void ReadConfigFile()
