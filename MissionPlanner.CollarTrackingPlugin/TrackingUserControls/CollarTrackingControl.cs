@@ -11,8 +11,9 @@ namespace MissionPlanner.CollarTrackingPlugin
 {
     public partial class CollarTrackingControl : UserControl
     {
-        private const int DEGREES = 360;
-        private const int DEGREE_INTERVAL = 5;
+        private int DEGREES = 360;
+        private int DEGREE_INTERVAL = 5;
+        private string LOG_LOCATION = @"C:\";
 
         #region Properties
         /// <summary>
@@ -29,6 +30,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             InitializeComponent();
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
+            ReadConfigFile();
         }
 
         private void CollarTrackingSetFrequencyButton_Click(object sender, EventArgs e)
@@ -58,7 +60,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
 
             //TO DO: Do actual scan commands
-
+            //Unhold 3DR Solo
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
@@ -85,6 +87,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             {
                 this.CollarScanProgressBar.Value = 100;
                 UnlockButtons(true);
+                //Hold drone
             }
         }
 
@@ -102,6 +105,42 @@ namespace MissionPlanner.CollarTrackingPlugin
             if (r.IsMatch(CollarTrackingFrequencyTextBox.Text))
                 isValidFrequency = true;
             return isValidFrequency;
+        }
+
+        private void ReadConfigFile()
+        {
+            const string CONFIG_FILE_LOCATION = @"C:\Program Files (x86)\Mission Planner\plugins";
+            string line = "";
+            System.IO.StreamReader file = new System.IO.StreamReader(CONFIG_FILE_LOCATION);
+            while ((line = file.ReadLine()) != null)
+            {
+                if (line.ToLower().Contains("degrees="))
+                {
+                    try
+                    {
+                        DEGREES = Convert.ToInt32(line.Replace("degrees=", ""));
+                    }
+                    catch (FormatException fex)
+                    {
+
+                    }
+                }
+                else if (line.ToLower().Contains("degree_interval="))
+                {
+                    try
+                    {
+                        DEGREE_INTERVAL = Convert.ToInt32(line.Replace("degree_interval=", ""));
+                    }
+                    catch (FormatException fex)
+                    {
+
+                    }
+                }
+                else if (line.ToLower().Contains("degrees="))
+                {
+                    LOG_LOCATION = line.Replace("log_location=", "");
+                }
+            }
         }
     }
 }
