@@ -88,7 +88,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             {
                 int direction;
                 float SNR;
-                direction = (int)MavLinkCom.GetParam("CONDITION_YAW"); //this is a guess for now
+                direction = (int)MavLinkCom.MAV.cs.yaw; //current state of drone
                 SNR = (float)Convert.ToDouble(data.data); //this may need further conversion if payload is more than just SNR
                 RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
 

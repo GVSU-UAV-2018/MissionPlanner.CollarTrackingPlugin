@@ -67,7 +67,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
-            MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true);
+            MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true); //Hold drone position
         }
 
         private void RDFData_Received(object o, EventArgs e)
@@ -90,6 +90,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 this.CollarScanProgressBar.Value = 100;
                 UnlockButtons(true);
                 LogScan();
+                MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true); //Hold drone position
             }
         }
 
