@@ -50,34 +50,31 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             return true;
         }
 
-        //Might not need this. Set this as a mission instead.
-        /*private static bool SetDroneOrientationAndScan(int direction)
+        public static bool ResetFlightPlan()
         {
-            //Set orientation. 0 = N, 90 = E
-            MAVLink.mavlink_command_long_t orientDrone = new MAVLink.mavlink_command_long_t();
-            orientDrone.target_system = DRONE_SYS_ID;
-            orientDrone.target_component = DRONE_COMP_ID;
-            orientDrone.param1 = direction; //Param 1 yaw in degrees
-            orientDrone.param2 = 0; //Yaw rotation speed. 0 = default
-            orientDrone.param3 = 1; //Yaw rotation direction CW
-            orientDrone.param4 = 0; //Absolute yaw rotation
-            orientDrone.command = (ushort)MAVLink.MAV_CMD.CONDITION_YAW; //Command for controlling YAW
+            MavLinkCom.setWPCurrent(0); // set nav to 0
+            return true;
+        }
 
-            // TODO: Is this the right function?
-            MainV2.instance.FlightPlanner.AddCommand(MAVLink.MAV_CMD.CONDITION_YAW, direction, 0, 1, 0, 0, 0, 0);
-            MavLinkCom.sendPacket(orientDrone, DRONE_SYS_ID, DRONE_COMP_ID);
+        //Loiter and unloiter
+        public static bool LoiterDrone(bool doLoiter)
+        {
+            MAVLink.mavlink_command_long_t loiter = new MAVLink.mavlink_command_long_t();
+            loiter.target_system = DRONE_SYS_ID;
+            loiter.target_component = DRONE_COMP_ID;
+            loiter.param1 = 0;
+            loiter.param2 = 0;
+            loiter.param3 = 0;
+            loiter.param4 = 0;
 
-            //Have RDF scan
-            MAVLink.mavlink_command_long_t beginScan = new MAVLink.mavlink_command_long_t();
-            beginScan.target_system = RDF_SYS_ID;
-            beginScan.target_component = RDF_COMP_ID;
-            beginScan.command = (ushort)MAVLink.MAV_CMD.USER_1;
-
-            // TODO: Is this the right function?
-            MavLink.sendPacket(beginScan, RDF_SYS_ID, RDF_COMP_ID);
+            if(doLoiter)
+                loiter.command = (ushort)MAVLink.MAV_GOTO.DO_HOLD; //loiter
+            else
+                loiter.command = (ushort)MAVLink.MAV_GOTO.DO_CONTINUE; //stop loiter
+            MavLinkCom.sendPacket(loiter, DRONE_SYS_ID, DRONE_COMP_ID);
 
             return true;
-        }*/
+        }
 
         /// <summary>
         /// Event handler for retreiving gain in each

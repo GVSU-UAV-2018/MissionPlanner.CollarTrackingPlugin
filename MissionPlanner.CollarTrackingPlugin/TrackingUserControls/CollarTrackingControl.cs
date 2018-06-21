@@ -60,13 +60,14 @@ namespace MissionPlanner.CollarTrackingPlugin
             //Clear all data contents before re-using
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
 
-            //TO DO: Do actual scan commands
-            //Unhold 3DR Solo
+
+            MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan
+            MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(false); //Let drone fly
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
-            //TO DO: Stop doing the commands
+            MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true);
         }
 
         private void RDFData_Received(object o, EventArgs e)
@@ -89,7 +90,6 @@ namespace MissionPlanner.CollarTrackingPlugin
                 this.CollarScanProgressBar.Value = 100;
                 UnlockButtons(true);
                 LogScan();
-                //Hold drone
             }
         }
 
