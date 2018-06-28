@@ -20,12 +20,33 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
         }
 
+        public static int GetCurrentWP()
+        {
+            return MavLinkCom.getRequestedWPNo(); //again i think this is correct
+        }
+
+        public static int GetWPCount()
+        {
+            return MavLinkCom.getWPCount();
+        }
+
         public static void CaptureRDFData(bool doCapture)
         {
             if(doCapture)
                 MavLinkCom.OnPacketReceived += RetreiveBearingStatus_Handler;
             else
                 MavLinkCom.OnPacketReceived -= RetreiveBearingStatus_Handler;
+        }
+
+        public static void GoToNextWayPoint()
+        {
+            MavLinkCom.setWPCurrent((ushort)(MavLinkCom.getRequestedWPNo() + 1)); //I think this is correct way to get curr wp
+        }
+
+        public static bool ResetFlightPlan()
+        {
+            MavLinkCom.setWPCurrent(0); // set nav to 0. Might be a better way to do this
+            return true;
         }
 
         /// <summary>
@@ -60,30 +81,10 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             return true;
         }
 
-        public static bool ResetFlightPlan()
+        public static void SendMavLinkCmdLongUser_1()
         {
-            MavLinkCom.setWPCurrent(0); // set nav to 0. Might be a bettr way to do this
-            return true;
-        }
-
-        //Loiter and unloiter
-        public static bool LoiterDrone(bool doLoiter)
-        {
-            MAVLink.mavlink_command_long_t loiter = new MAVLink.mavlink_command_long_t();
-            loiter.target_system = 1; //Drone
-            loiter.target_component = 1; //AutoPilot
-            loiter.param1 = 0;
-            loiter.param2 = 0;
-            loiter.param3 = 0;
-            loiter.param4 = 0;
-
-            if(doLoiter)
-                loiter.command = (ushort)MAVLink.MAV_GOTO.DO_HOLD; //loiter
-            else
-                loiter.command = (ushort)MAVLink.MAV_GOTO.DO_CONTINUE; //stop loiter
-            MavLinkCom.sendPacket(loiter, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
-
-            return true;
+            //TO DO: Check that drone is loitering first before RDF scan
+            MavLinkCom.doCommand(1, 77, MAVLink.MAV_CMD.USER_1, 0, 0, 0, 0, 0, 0, 0);
         }
 
         /// <summary>
@@ -106,6 +107,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                         float SNR;
                         direction = (int)MavLinkCom.MAV.cs.yaw; //current state of drone
                         SNR = (float)Convert.ToDouble(param_set_msg.param_value); //this may need further conversion if payload is more than just SNR
+                        
                         RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
 
                         RDFDataReceived(new object(), new EventArgs());

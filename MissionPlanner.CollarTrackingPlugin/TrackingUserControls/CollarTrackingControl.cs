@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*******************************************************
+ * Mission Planner UAV Plugin
+ * 
+ * GVSU Team UAV 2018
+ * 
+ * User will provide a flight plan that consists of
+ * loiter unlimited and yaw commands. This determines
+ * how many increments the drone turns in.
+ ******************************************************/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -12,10 +21,6 @@ namespace MissionPlanner.CollarTrackingPlugin
 {
     public partial class CollarTrackingControl : UserControl
     {
-        private int DEGREES = 360;
-        private int DEGREE_INTERVAL = 5;
-        private string LOG_LOCATION = @"C:\";
-
         #region Properties
         /// <summary>
         /// Gets/Sets the desired collar frequency
@@ -31,7 +36,6 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             InitializeComponent();
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
-            ReadConfigFile();
         }
 
         private void CollarTrackingSetFrequencyButton_Click(object sender, EventArgs e)
@@ -61,20 +65,20 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
 
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(true);
-            MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan
-            MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(false); //Let drone fly
+            MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
+            MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
-            MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true); //Hold drone position
+            UnlockButtons(true);
         }
 
         private void RDFData_Received(object o, EventArgs e)
         {
             //Whatever the numberof values is divided by the number of intervals to perform
-            this.CollarScanProgressBar.Value = MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Count / (DEGREES / DEGREE_INTERVAL);
+            this.CollarScanProgressBar.Value = (int)(MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() / (float)MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount()) * 100;
 
             //rinse and repeat
             //0 index for series because only one series is used
@@ -86,13 +90,19 @@ namespace MissionPlanner.CollarTrackingPlugin
             }
 
             //Complete
-            if(MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Count == DEGREES / DEGREE_INTERVAL)
+            if(MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() 
+                == MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount())
             {
                 this.CollarScanProgressBar.Value = 100;
                 UnlockButtons(true);
                 LogScan();
                 MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
-                MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true); //Hold drone position
+            }
+            else
+            {
+                //The next WP should be YAW
+                MavLinkRDFCommunication.MavLinkRDFCommunication.GoToNextWayPoint();
+                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
             }
         }
 
@@ -115,6 +125,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         private void LogScan()
         {
             const string FILE_NAME = "CollarLog.csv";
+            const string LOG_LOCATION = @"C:\TrackingLogs";
             string appendedLine = CollarTrackingFrequencyTextBox.Text + "," +
                 RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
                 RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +
@@ -125,42 +136,6 @@ namespace MissionPlanner.CollarTrackingPlugin
                     "Frequency,Degrees from North,Confidence,Date/Time");
 
             File.AppendAllText(LOG_LOCATION + @"\" + FILE_NAME, appendedLine);
-        }
-
-        private void ReadConfigFile()
-        {
-            const string CONFIG_FILE_LOCATION = @"C:\Program Files (x86)\Mission Planner\plugins\MissionPlanner.CollarTrackingPlugin.Settings.txt";
-            string line = "";
-            System.IO.StreamReader file = new System.IO.StreamReader(CONFIG_FILE_LOCATION);
-            while ((line = file.ReadLine()) != null)
-            {
-                if (line.ToLower().Contains("degrees="))
-                {
-                    try
-                    {
-                        DEGREES = Convert.ToInt32(line.Replace("degrees=", ""));
-                    }
-                    catch (FormatException fex)
-                    {
-
-                    }
-                }
-                else if (line.ToLower().Contains("degree_interval="))
-                {
-                    try
-                    {
-                        DEGREE_INTERVAL = Convert.ToInt32(line.Replace("degree_interval=", ""));
-                    }
-                    catch (FormatException fex)
-                    {
-
-                    }
-                }
-                else if (line.ToLower().Contains("degrees="))
-                {
-                    LOG_LOCATION = line.Replace("log_location=", "");
-                }
-            }
         }
     }
 }
