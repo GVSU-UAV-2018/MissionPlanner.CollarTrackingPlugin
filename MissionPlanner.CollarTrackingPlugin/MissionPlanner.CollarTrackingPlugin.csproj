@@ -38,6 +38,9 @@
     <Reference Include="GMap.NET.Core">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\GMap.NET.Core.dll</HintPath>
     </Reference>
+    <Reference Include="GMap.NET.WindowsForms">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\GMap.NET.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="MAVLink, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Mission Planner\MAVLink.dll</HintPath>

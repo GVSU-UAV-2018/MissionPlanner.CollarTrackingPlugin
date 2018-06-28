@@ -22,7 +22,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// to search for.
         /// </summary>
         [Description("The selected collar frequency to be scanned."),Category("Data")] 
-        public double SelectedCollarFrequency
+        public float SelectedCollarFrequency
         { get; set; }
 
         #endregion
@@ -40,7 +40,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             {
                 CollarTrackingFrequencyTextBox.BackColor = Color.Green;
                 this.CollarFrequencyLabel.Text = CollarTrackingFrequencyTextBox.Text + " MHz";
-                SelectedCollarFrequency = Convert.ToDouble(this.CollarTrackingFrequencyTextBox.Text);
+                SelectedCollarFrequency = (float)Convert.ToDouble(this.CollarTrackingFrequencyTextBox.Text);
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
                 this.CollarTrackingStartScanButton.Enabled = true;
             }
@@ -60,13 +60,14 @@ namespace MissionPlanner.CollarTrackingPlugin
             //Clear all data contents before re-using
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
 
-
+            MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(true);
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan
             MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(false); //Let drone fly
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
+            MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
             MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true); //Hold drone position
         }
 
@@ -90,6 +91,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 this.CollarScanProgressBar.Value = 100;
                 UnlockButtons(true);
                 LogScan();
+                MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
                 MavLinkRDFCommunication.MavLinkRDFCommunication.LoiterDrone(true); //Hold drone position
             }
         }
@@ -127,7 +129,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         private void ReadConfigFile()
         {
-            const string CONFIG_FILE_LOCATION = @"C:\Program Files (x86)\Mission Planner\plugins";
+            const string CONFIG_FILE_LOCATION = @"C:\Program Files (x86)\Mission Planner\plugins\MissionPlanner.CollarTrackingPlugin.Settings.txt";
             string line = "";
             System.IO.StreamReader file = new System.IO.StreamReader(CONFIG_FILE_LOCATION);
             while ((line = file.ReadLine()) != null)
