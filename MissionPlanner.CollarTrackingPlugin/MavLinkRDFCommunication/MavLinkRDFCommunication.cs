@@ -84,7 +84,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         public static void SendMavLinkCmdLongUser_1()
         {
             //TO DO: Check that drone is loitering first before RDF scan
-            MavLinkCom.doCommand(1, 77, MAVLink.MAV_CMD.USER_1, 0, 0, 0, 0, 0, 0, 0);
+            MavLinkCom.doCommand(1, 177, MAVLink.MAV_CMD.USER_1, 0, 0, 0, 0, 0, 0, 0, false);
         }
 
         /// <summary>

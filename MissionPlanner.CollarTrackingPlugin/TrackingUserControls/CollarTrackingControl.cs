@@ -67,10 +67,12 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(true);
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
+            CollarTrackingTimeoutTimer.Start();
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
+            CollarTrackingTimeoutTimer.Stop();
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
             UnlockButtons(true);
         }
@@ -97,15 +99,23 @@ namespace MissionPlanner.CollarTrackingPlugin
                 UnlockButtons(true);
                 LogScan();
                 MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
+                CollarTrackingTimeoutTimer.Stop();
             }
             else
             {
                 //The next WP should be YAW
                 MavLinkRDFCommunication.MavLinkRDFCommunication.GoToNextWayPoint();
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
+                CollarTrackingTimeoutTimer.Stop();
+                CollarTrackingTimeoutTimer.Start();
             }
         }
 
+        private void CollarTrackingTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            //Dont post data, just go to next position
+            RDFData_Received(new object(), new EventArgs());
+        }
         private void UnlockButtons(bool unlock)
         {
             this.CollarTrackingSetFrequencyButton.Enabled = unlock;
