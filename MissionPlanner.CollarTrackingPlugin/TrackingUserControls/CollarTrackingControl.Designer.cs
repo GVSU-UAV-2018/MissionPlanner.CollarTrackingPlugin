@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint2 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 20D);
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint3 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 20D);
             this.CollarTrackingControlPanel = new System.Windows.Forms.TableLayoutPanel();
             this.CollarTrackingControlGroupBox = new System.Windows.Forms.GroupBox();
             this.CollarTrackingControlGroupBoxPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -270,19 +270,19 @@
             // 
             this.CollarTrackingPolarChart.BorderlineColor = System.Drawing.Color.Gray;
             this.CollarTrackingPolarChart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea2.Name = "ChartArea1";
-            this.CollarTrackingPolarChart.ChartAreas.Add(chartArea2);
+            chartArea3.Name = "ChartArea1";
+            this.CollarTrackingPolarChart.ChartAreas.Add(chartArea3);
             this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingPolarChart, 14);
             this.CollarTrackingPolarChart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CollarTrackingPolarChart.Location = new System.Drawing.Point(177, 3);
             this.CollarTrackingPolarChart.Name = "CollarTrackingPolarChart";
             this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingPolarChart, 19);
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
-            series2.IsVisibleInLegend = false;
-            series2.Name = "Series1";
-            series2.Points.Add(dataPoint2);
-            this.CollarTrackingPolarChart.Series.Add(series2);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
+            series3.IsVisibleInLegend = false;
+            series3.Name = "Series1";
+            series3.Points.Add(dataPoint3);
+            this.CollarTrackingPolarChart.Series.Add(series3);
             this.CollarTrackingPolarChart.Size = new System.Drawing.Size(417, 298);
             this.CollarTrackingPolarChart.TabIndex = 2;
             this.CollarTrackingPolarChart.Text = "chart1";
@@ -313,7 +313,6 @@
             // 
             // CollarTrackingTimeoutTimer
             // 
-            this.CollarTrackingTimeoutTimer.Enabled = true;
             this.CollarTrackingTimeoutTimer.Interval = 12000;
             this.CollarTrackingTimeoutTimer.Tick += new System.EventHandler(this.CollarTrackingTimeoutTimer_Tick);
             // 

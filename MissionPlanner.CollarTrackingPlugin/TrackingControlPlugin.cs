@@ -7,7 +7,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 {
     public class TrackingControlPlugin : MissionPlanner.Plugin.Plugin
     {
-        //TabPage p;
+        TabPage p;
 
         public override string Name => "Collar Tracking Interface Plugin";
 
@@ -19,7 +19,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             CollarTrackingControl ctc = new CollarTrackingControl();
             ctc.Dock = DockStyle.Fill;
-            TabPage p = new TabPage("Collar Tracking");
+            p = new TabPage("Collar Tracking");
             p.Controls.Add(ctc);
             MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Add(p);
 
@@ -28,13 +28,13 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         public override bool Loaded()
         {
-            CollarTrackingControl ctc = new CollarTrackingControl();
+            /*CollarTrackingControl ctc = new CollarTrackingControl();
             ctc.Dock = DockStyle.Fill;
             //TabPage p = new TabPage("Collar Tracking");
             //p.Controls.Add(ctc);
             Form f = new Form();
             f.Controls.Add(ctc);
-            f.Show();
+            f.Show();*/
             //MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Add(p);
             return true;
         }
@@ -46,8 +46,8 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         public override bool Loop()
         {
-            //if(!MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Contains(p))
-            //MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Add(p);
+            if(!MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Contains(p))
+                MissionPlanner.GCSViews.FlightData.instance.tabControlactions.TabPages.Add(p);
             return true;
         }
 

@@ -45,7 +45,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
         public static bool ResetFlightPlan()
         {
-            MavLinkCom.setWPCurrent(0); // set nav to 0. Might be a better way to do this
+            MavLinkCom.setWPCurrent(0); //Based on Mission Planner button click event
             return true;
         }
 

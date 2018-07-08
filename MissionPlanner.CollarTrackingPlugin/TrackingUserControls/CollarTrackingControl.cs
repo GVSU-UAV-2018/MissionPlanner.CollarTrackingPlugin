@@ -67,12 +67,12 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(true);
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
-            CollarTrackingTimeoutTimer.Start();
+            CollarTrackingTimeoutTimer.Enabled = true;
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
-            CollarTrackingTimeoutTimer.Stop();
+            CollarTrackingTimeoutTimer.Enabled = false;
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
             UnlockButtons(true);
         }
@@ -99,7 +99,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 UnlockButtons(true);
                 LogScan();
                 MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
-                CollarTrackingTimeoutTimer.Stop();
+                CollarTrackingTimeoutTimer.Enabled = false;
             }
             else
             {
