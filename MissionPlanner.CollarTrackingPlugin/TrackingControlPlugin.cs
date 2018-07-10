@@ -8,6 +8,7 @@ namespace MissionPlanner.CollarTrackingPlugin
     public class TrackingControlPlugin : MissionPlanner.Plugin.Plugin
     {
         TabPage p;
+        CollarTrackingControl ctc;
 
         public override string Name => "Collar Tracking Interface Plugin";
 
@@ -17,7 +18,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         public override bool Init()
         {
-            CollarTrackingControl ctc = new CollarTrackingControl();
+            ctc = new CollarTrackingControl();
             ctc.Dock = DockStyle.Fill;
             p = new TabPage("Collar Tracking");
             p.Controls.Add(ctc);

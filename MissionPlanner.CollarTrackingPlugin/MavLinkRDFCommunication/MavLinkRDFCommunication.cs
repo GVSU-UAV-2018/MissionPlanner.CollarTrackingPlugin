@@ -15,6 +15,9 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         public static List<KeyValuePair<int, float>> RDFData = new List<KeyValuePair<int, float>>();
         public static event EventHandler RDFDataReceived;
 
+        const int system_id = 1;
+        public static int comp_id = 177;
+
         static MavLinkRDFCommunication()
         {
 
@@ -70,8 +73,8 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             paramid[8] = (byte)'\0';
 
             MAVLink.mavlink_param_set_t setFreq = new MAVLink.mavlink_param_set_t();
-            setFreq.target_system = (byte)1; //Drone
-            setFreq.target_component = (byte)177; //Pi
+            setFreq.target_system = (byte)system_id; //Drone
+            setFreq.target_component = (byte)comp_id; //Pi
             setFreq.param_id = paramid;
             setFreq.param_value = frequency;
             setFreq.param_type = (byte)MAVLink.MAV_PARAM_TYPE.REAL32;
@@ -84,7 +87,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         public static void SendMavLinkCmdLongUser_1()
         {
             //TO DO: Check that drone is loitering first before RDF scan
-            MavLinkCom.doCommand(1, 177, MAVLink.MAV_CMD.USER_1, 0, 0, 0, 0, 0, 0, 0, false);
+            MavLinkCom.doCommand(system_id, (byte)comp_id, MAVLink.MAV_CMD.USER_1, 0, 0, 0, 0, 0, 0, 0, false);
         }
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// <returns></returns>
         private static void RetreiveBearingStatus_Handler(object o, MAVLink.MAVLinkMessage msg)
         {
-            if (msg.sysid == 1 && msg.compid == 177) //Find enum for this and make ids configurable
+            if (msg.sysid == system_id && msg.compid == comp_id) //Find enum for this and make ids configurable
             {
                 //Received values from Pi
                 if(msg.msgid == 23)

@@ -32,10 +32,13 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         #endregion
 
+        int SCAN_TIMEOUT = 12;
+
         public CollarTrackingControl()
         {
             InitializeComponent();
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
+            ReadConfigFile();
         }
 
         private void CollarTrackingSetFrequencyButton_Click(object sender, EventArgs e)
@@ -86,10 +89,15 @@ namespace MissionPlanner.CollarTrackingPlugin
             //0 index for series because only one series is used
             //for our needs
             CollarTrackingPolarChart.Series[0].Points.Clear();
+            float min = 1000;
             foreach(KeyValuePair<int, float> kvp in MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData)
             {
                 CollarTrackingPolarChart.Series[0].Points.AddXY(kvp.Key, kvp.Value);
+                if (kvp.Value < min)
+                    min = kvp.Value;
             }
+
+            CollarTrackingPolarChart.ChartAreas[0].AxisY.Minimum = (int)(min - 1);
 
             //Complete
             if(MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() 
@@ -116,6 +124,12 @@ namespace MissionPlanner.CollarTrackingPlugin
             //Dont post data, just go to next position
             RDFData_Received(new object(), new EventArgs());
         }
+
+        private void CollarTrackingConnectionTimer_Tick(object sender, EventArgs e)
+        {
+
+        }
+
         private void UnlockButtons(bool unlock)
         {
             this.CollarTrackingSetFrequencyButton.Enabled = unlock;
@@ -130,6 +144,49 @@ namespace MissionPlanner.CollarTrackingPlugin
             if (r.IsMatch(CollarTrackingFrequencyTextBox.Text))
                 isValidFrequency = true;
             return isValidFrequency;
+        }
+
+        private void ReadConfigFile()
+        {
+            const string CONFIG_FILE_LOCATION = @"C:\Program Files (x86)\Mission Planner\plugins\MissionPlanner.CollarTrackingPlugin.settings.ini";
+            string line = "";
+            System.IO.StreamReader file;
+
+            try
+            {
+                file = new System.IO.StreamReader(CONFIG_FILE_LOCATION);
+            }
+            catch (FileNotFoundException fex)
+            {
+                return;
+            }
+
+            while ((line = file.ReadLine()) != null)
+            {
+                if (line.ToLower().Contains("SCAN_TIMEOUT="))
+                {
+                    try
+                    {
+                        CollarTrackingTimeoutTimer.Interval = Convert.ToInt32(line.Replace("SCAN_TIMEOUT=", ""));
+                    }
+                    catch (FormatException fex)
+                    {
+
+                    }
+                }
+                else if (line.ToLower().Contains("COMP_ID="))
+                {
+                    try
+                    {
+                        MavLinkRDFCommunication.MavLinkRDFCommunication.comp_id 
+                            = Convert.ToInt32(line.Replace("COMP_ID=", ""));
+                    }
+                    catch (FormatException fex)
+                    {
+
+                    }
+                }
+            }
         }
 
         private void LogScan()
