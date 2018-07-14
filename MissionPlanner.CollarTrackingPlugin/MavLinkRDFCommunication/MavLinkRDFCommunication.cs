@@ -18,14 +18,17 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         const int system_id = 1;
         public static int comp_id = 177;
 
+        public static int current_wp = 0;
+
         static MavLinkRDFCommunication()
         {
 
         }
 
+        //No function for this since the current wp is broadcast
         public static int GetCurrentWP()
         {
-            return MavLinkCom.getRequestedWPNo(); //again i think this is correct
+            return current_wp;
         }
 
         public static int GetWPCount()
@@ -116,6 +119,12 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                         RDFDataReceived(new object(), new EventArgs());
                     //}
                 }
+            }
+
+            if(msg.msgid == 42)
+            {
+                MAVLink.mavlink_mission_current_t mission_current_msg = (MAVLink.mavlink_mission_current_t)msg.data;
+                current_wp = mission_current_msg.seq;
             }
         }
     }

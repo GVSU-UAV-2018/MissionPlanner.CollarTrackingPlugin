@@ -32,6 +32,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         #endregion
 
+        Logging.Logging logs;
         int SCAN_TIMEOUT = 12;
 
         public CollarTrackingControl()
@@ -63,6 +64,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             if (SelectedCollarFrequency == 0 && VerifyFrequency())
                 return;
 
+            CollarTrackingScanInfoLabel.Text = "Scan Status:";
             UnlockButtons(false);
             //Clear all data contents before re-using
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
@@ -71,6 +73,8 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
             CollarTrackingTimeoutTimer.Enabled = true;
+
+            logs = new Logging.Logging(@"C:\Drone_Debugging");
         }
 
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
@@ -96,14 +100,22 @@ namespace MissionPlanner.CollarTrackingPlugin
                 if (kvp.Value < min)
                     min = kvp.Value;
             }
-
+            logs.AddData();
             CollarTrackingPolarChart.ChartAreas[0].AxisY.Minimum = (int)(min - 1);
 
             //Complete
-            if(MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() 
+            if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() 
                 == MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount())
             {
                 this.CollarScanProgressBar.Value = 100;
+                RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis();
+
+                CollarTrackingScanInfoLabel.Text = "D: " +
+                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
+                    "° from N | C: " +
+                    (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") + 
+                    "%";
+
                 UnlockButtons(true);
                 LogScan();
                 MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
@@ -182,6 +194,18 @@ namespace MissionPlanner.CollarTrackingPlugin
                             = Convert.ToInt32(line.Replace("COMP_ID=", ""));
                     }
                     catch (FormatException fex)
+                    {
+
+                    }
+                }
+                else if(line.ToLower().Contains("RAD_PATTERN_FILE="))
+                {
+                    try
+                    {
+                        RadiationPatternMatching.RadiationPatternMatching.AntennaPatternFile = line.Replace("COMP_ID=", "");
+                        File.ReadLines(RadiationPatternMatching.RadiationPatternMatching.AntennaPatternFile);
+                    }
+                    catch (FileNotFoundException fex)
                     {
 
                     }
