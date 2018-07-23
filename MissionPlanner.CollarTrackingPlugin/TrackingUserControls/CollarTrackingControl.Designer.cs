@@ -295,6 +295,7 @@
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
             series1.IsVisibleInLegend = false;
+            series1.IsXValueIndexed = true;
             series1.Name = "Series1";
             series1.Points.Add(dataPoint1);
             this.CollarTrackingPolarChart.Series.Add(series1);

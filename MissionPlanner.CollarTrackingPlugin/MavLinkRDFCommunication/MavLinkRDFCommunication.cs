@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*******************************************************
+ * MavLinkRDFCommunication
+ * 
+ * GVSU Team UAV 2018
+ * 
+ * Implements all communication between the Raspberry
+ * Pi and the base station Collar Tracking Control.
+ ******************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,32 +18,70 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 {
     static class MavLinkRDFCommunication
     {
+        /// <summary>
+        /// Retreives the comport that is in use with the drone.
+        /// </summary>
         private static MAVLinkInterface MavLinkCom = MainV2.comPort;
 
+        /// <summary>
+        /// List of SNR data retreived from the Pi.
+        /// </summary>
         public static List<KeyValuePair<int, float>> RDFData = new List<KeyValuePair<int, float>>();
+
+        /// <summary>
+        /// Event that is triggered when SNR data is received
+        /// from the Pi.
+        /// </summary>
         public static event EventHandler RDFDataReceived;
 
+        /// <summary>
+        /// The id of the drone.
+        /// </summary>
         const int system_id = 1;
+
+        /// <summary>
+        /// The id of the Pi attached to the drone.
+        /// </summary>
         public static int comp_id = 177;
 
+        /// <summary>
+        /// The current waypoint the system is executing.
+        /// </summary>
         public static int current_wp = 0;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         static MavLinkRDFCommunication()
         {
 
         }
 
-        //No function for this since the current wp is broadcast
+        /// <summary>
+        /// Gets the current waypoint that the drone is 
+        /// executing.
+        /// </summary>
+        /// <returns></returns>
         public static int GetCurrentWP()
         {
             return current_wp;
         }
 
+        /// <summary>
+        /// Gets the total amount of waypoints
+        /// in the flight plan.
+        /// </summary>
+        /// <returns></returns>
         public static int GetWPCount()
         {
             return MavLinkCom.getWPCount();
         }
 
+        /// <summary>
+        /// Enables or disables the packet reception
+        /// event handler.
+        /// </summary>
+        /// <param name="doCapture"></param>
         public static void CaptureRDFData(bool doCapture)
         {
             if(doCapture)
@@ -44,19 +90,26 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                 MavLinkCom.OnPacketReceived -= RetreiveBearingStatus_Handler;
         }
 
+        /// <summary>
+        /// Sets the drone to perform the next waypoint.
+        /// </summary>
         public static void GoToNextWayPoint()
         {
-            MavLinkCom.setWPCurrent((ushort)(MavLinkCom.getRequestedWPNo() + 1)); //I think this is correct way to get curr wp
+            MavLinkCom.setWPCurrent((ushort)(GetCurrentWP() + 1)); //I think this is correct way to get curr wp
         }
 
+        /// <summary>
+        /// Resets the flight plan to the first waypoint.
+        /// </summary>
+        /// <returns></returns>
         public static bool ResetFlightPlan()
         {
-            MavLinkCom.setWPCurrent(0); //Based on Mission Planner button click event
+            MavLinkCom.setWPCurrent(1); //Based on Mission Planner button click event. 1 is yaw to zero
             return true;
         }
 
         /// <summary>
-        /// Works
+        /// Sends frequency to the Pi fro processing.
         /// </summary>
         /// <param name="frequency"></param>
         /// <returns></returns>
@@ -87,6 +140,9 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             return true;
         }
 
+        /// <summary>
+        /// Send signal to drone to perform RDF scan.
+        /// </summary>
         public static void SendMavLinkCmdLongUser_1()
         {
             //TO DO: Check that drone is loitering first before RDF scan
@@ -95,7 +151,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
         /// <summary>
         /// Event handler for retreiving gain in each
-        /// direction. Works
+        /// direction and for retreiving current waypoints
         /// </summary>
         /// <param name="data">A MAVLink message of the data.</param>
         /// <returns></returns>

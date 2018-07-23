@@ -33,15 +33,34 @@ namespace MissionPlanner.CollarTrackingPlugin
         #endregion
 
         Logging.Logging logs;
+
+        /// <summary>
+        /// The timeout period for the Pi
+        /// to send an SNR value to the
+        /// base station
+        /// </summary>
         int SCAN_TIMEOUT = 12;
 
+        string LOG_LOCATION = @"C:\UAV\Log";
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CollarTrackingControl()
         {
             InitializeComponent();
+            //Add MavLink RDF Received event handler
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
             ReadConfigFile();
         }
 
+        /// <summary>
+        /// Event Handler: Sends the frequency in
+        /// the Collar Tracking text box to the
+        /// Pi.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CollarTrackingSetFrequencyButton_Click(object sender, EventArgs e)
         {
             if (VerifyFrequency())
@@ -59,6 +78,12 @@ namespace MissionPlanner.CollarTrackingPlugin
             }
         }
 
+        /// <summary>
+        /// Event Handler: Starts a scan by sending a message
+        /// to the Pi.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CollarTrackingStartScanButton_Click(object sender, EventArgs e)
         {
             if (SelectedCollarFrequency == 0 && VerifyFrequency())
@@ -74,9 +99,16 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
             CollarTrackingTimeoutTimer.Enabled = true;
 
-            logs = new Logging.Logging(@"C:\Drone_Debugging");
+            logs = new Logging.Logging(LOG_LOCATION);
         }
 
+        /// <summary>
+        /// Event Handler: Clears the event handler that
+        /// keeps the Pi scanning for data, which
+        /// effectively cancels the scan.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
             CollarTrackingTimeoutTimer.Enabled = false;
@@ -84,7 +116,13 @@ namespace MissionPlanner.CollarTrackingPlugin
             UnlockButtons(true);
         }
 
-        private void RDFData_Received(object o, EventArgs e)
+        /// <summary>
+        /// Event Handler: Performs all necessary operations
+        /// when a data point is received from the Pi.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RDFData_Received(object sender, EventArgs e)
         {
             //Whatever the numberof values is divided by the number of intervals to perform
             this.CollarScanProgressBar.Value = (int)(MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() / (float)MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount()) * 100;
@@ -105,7 +143,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
             //Complete
             if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() 
-                == MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount())
+                >= MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount() - 1)
             {
                 this.CollarScanProgressBar.Value = 100;
                 RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis();
@@ -131,6 +169,12 @@ namespace MissionPlanner.CollarTrackingPlugin
             }
         }
 
+        /// <summary>
+        /// Event Handler: Skips waiting for the current data if
+        /// the desired interval is reached.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CollarTrackingTimeoutTimer_Tick(object sender, EventArgs e)
         {
             //Dont post data, just go to next position
@@ -142,6 +186,11 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         }
 
+        /// <summary>
+        /// Places the user interface in mode specific
+        /// to the system's current state.
+        /// </summary>
+        /// <param name="unlock"></param>
         private void UnlockButtons(bool unlock)
         {
             this.CollarTrackingSetFrequencyButton.Enabled = unlock;
@@ -149,6 +198,11 @@ namespace MissionPlanner.CollarTrackingPlugin
             this.CollarTrackingCancelScanButton.Enabled = !unlock;
         }
 
+        /// <summary>
+        /// Ensures that the entered frequency is of correct
+        /// format.
+        /// </summary>
+        /// <returns></returns>
         private bool VerifyFrequency()
         {
             bool isValidFrequency = false;
@@ -158,6 +212,10 @@ namespace MissionPlanner.CollarTrackingPlugin
             return isValidFrequency;
         }
 
+        /// <summary>
+        /// Loads the configuration parameters
+        /// for the program.
+        /// </summary>
         private void ReadConfigFile()
         {
             const string CONFIG_FILE_LOCATION = @"C:\Program Files (x86)\Mission Planner\plugins\MissionPlanner.CollarTrackingPlugin.settings.ini";
@@ -210,13 +268,19 @@ namespace MissionPlanner.CollarTrackingPlugin
 
                     }
                 }
+                else if (line.ToLower().Contains("LOG_DIR="))
+                {
+                    LOG_LOCATION = line.Replace("LOG_DIR=", "");
+                }
             }
         }
 
+        /// <summary>
+        /// Saves a log of an RDF scan.
+        /// </summary>
         private void LogScan()
         {
             const string FILE_NAME = "CollarLog.csv";
-            const string LOG_LOCATION = @"C:\TrackingLogs";
             string appendedLine = CollarTrackingFrequencyTextBox.Text + "," +
                 RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
                 RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +

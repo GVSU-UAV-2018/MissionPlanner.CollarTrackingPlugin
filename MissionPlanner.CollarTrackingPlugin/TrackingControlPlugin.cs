@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*******************************************************
+ * CollarTrackingPlugin
+ * 
+ * GVSU Team UAV 2018
+ * 
+ * Places the Collar Tracking Control in Mission
+ * Planner.
+ ******************************************************/
+using System;
 using System.Windows.Forms;
 
 using MissionPlanner;

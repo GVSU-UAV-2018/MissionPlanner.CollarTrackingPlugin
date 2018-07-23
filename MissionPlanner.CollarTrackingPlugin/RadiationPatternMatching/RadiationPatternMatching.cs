@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*******************************************************
+ * RadiationPatternMatching
+ * 
+ * GVSU Team UAV 2018
+ * 
+ * Implements all communication between the Raspberry
+ * Pi and the base station Collar Tracking Control.
+ ******************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +16,36 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
 {
     static class RadiationPatternMatching
     {
+        /// <summary>
+        /// Retreived angle from North.
+        /// </summary>
         public static float DegreesFromNorth = 0.0F;
+
+        /// <summary>
+        /// Confidence in measurement.
+        /// </summary>
         public static float Confidence = 0.0F;
+
+        /// <summary>
+        /// File to compare retreived signals wth.
+        /// </summary>
         public static string AntennaPatternFile = @"C:\Yagi_3Elm_RadPattern.csv";
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         static RadiationPatternMatching()
         {
 
         }
 
+        /// <summary>
+        /// Performs the pattern matching analysis by 
+        /// loading the radiation pattern and comparing
+        /// it with received SNR signals via a cross
+        /// correlation.
+        /// </summary>
+        /// <returns></returns>
         public static bool PerformPatternMatchingAnalysis()
         {
             //Read radiation pattern file. File should be in increments
@@ -67,6 +96,11 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
             return true;
         }
 
+        /// <summary>
+        /// Performs a correlation between two lists.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         private static void CircularCrossCorrelation(List<float> x, List<float> y)
         {
             /* Calculate the mean of the two series x[], y[] */
