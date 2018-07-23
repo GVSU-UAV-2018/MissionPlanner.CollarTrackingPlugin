@@ -32,7 +32,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         #endregion
 
-        Logging.Logging logs;
+        Logging.Logging log;
 
         /// <summary>
         /// The timeout period for the Pi
@@ -99,7 +99,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
             CollarTrackingTimeoutTimer.Enabled = true;
 
-            logs = new Logging.Logging(LOG_LOCATION);
+            log = new Logging.Logging(LOG_LOCATION);
         }
 
         /// <summary>
@@ -111,6 +111,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <param name="e"></param>
         private void CollarTrackingCancelScanButton_Click(object sender, EventArgs e)
         {
+            LogScan(false);
             CollarTrackingTimeoutTimer.Enabled = false;
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
             UnlockButtons(true);
@@ -138,7 +139,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 if (kvp.Value < min)
                     min = kvp.Value;
             }
-            logs.AddData();
+            log.AddData();
             CollarTrackingPolarChart.ChartAreas[0].AxisY.Minimum = (int)(min - 1);
 
             //Complete
@@ -155,7 +156,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                     "%";
 
                 UnlockButtons(true);
-                LogScan();
+                LogScan(true);
                 MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
                 CollarTrackingTimeoutTimer.Enabled = false;
             }
@@ -278,17 +279,28 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <summary>
         /// Saves a log of an RDF scan.
         /// </summary>
-        private void LogScan()
+        private void LogScan(bool completed)
         {
             const string FILE_NAME = "CollarLog.csv";
-            string appendedLine = CollarTrackingFrequencyTextBox.Text + "," +
-                RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
-                RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +
+            string appendedLine = "";
+            if (completed)
+            {
+                appendedLine = CollarTrackingFrequencyTextBox.Text + ", Completed, " +
+                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
+                    RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +
+                    DateTime.Now.ToString();
+            }
+            else
+            {
+                appendedLine = CollarTrackingFrequencyTextBox.Text + ", Cancelled, " +
+                0 + "," +
+                0 + "," +
                 DateTime.Now.ToString();
+            }
 
             if (!File.Exists(LOG_LOCATION + @"\" + FILE_NAME))
                 File.WriteAllText(LOG_LOCATION + @"\" + FILE_NAME,
-                    "Frequency,Degrees from North,Confidence,Date/Time");
+                    "Frequency, Completed?, Degrees from North,Confidence,Date/Time");
 
             File.AppendAllText(LOG_LOCATION + @"\" + FILE_NAME, appendedLine);
         }
