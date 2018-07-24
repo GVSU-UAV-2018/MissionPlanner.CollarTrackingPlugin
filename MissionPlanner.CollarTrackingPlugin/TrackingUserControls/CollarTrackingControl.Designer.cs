@@ -28,10 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 20D);
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint3 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 20D);
             this.CollarTrackingControlPanel = new System.Windows.Forms.TableLayoutPanel();
             this.CollarTrackingControlGroupBox = new System.Windows.Forms.GroupBox();
             this.CollarTrackingControlGroupBoxPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -46,8 +45,6 @@
             this.CollarTrackingPolarChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.CollarTrackingScanInfoLabel = new System.Windows.Forms.Label();
             this.CollarScanProgressBar = new System.Windows.Forms.ProgressBar();
-            this.CollarTrackingTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-            this.CollarTrackingConnectionTimer = new System.Windows.Forms.Timer(this.components);
             this.CollarTrackingControlPanel.SuspendLayout();
             this.CollarTrackingControlGroupBox.SuspendLayout();
             this.CollarTrackingControlGroupBoxPanel.SuspendLayout();
@@ -285,20 +282,20 @@
             // 
             this.CollarTrackingPolarChart.BorderlineColor = System.Drawing.Color.Gray;
             this.CollarTrackingPolarChart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea1.Name = "ChartArea1";
-            this.CollarTrackingPolarChart.ChartAreas.Add(chartArea1);
+            chartArea3.Name = "ChartArea1";
+            this.CollarTrackingPolarChart.ChartAreas.Add(chartArea3);
             this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingPolarChart, 14);
             this.CollarTrackingPolarChart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CollarTrackingPolarChart.Location = new System.Drawing.Point(177, 3);
             this.CollarTrackingPolarChart.Name = "CollarTrackingPolarChart";
             this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingPolarChart, 19);
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
-            series1.IsVisibleInLegend = false;
-            series1.IsXValueIndexed = true;
-            series1.Name = "Series1";
-            series1.Points.Add(dataPoint1);
-            this.CollarTrackingPolarChart.Series.Add(series1);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
+            series3.IsVisibleInLegend = false;
+            series3.IsXValueIndexed = true;
+            series3.Name = "Series1";
+            series3.Points.Add(dataPoint3);
+            this.CollarTrackingPolarChart.Series.Add(series3);
             this.CollarTrackingPolarChart.Size = new System.Drawing.Size(417, 298);
             this.CollarTrackingPolarChart.TabIndex = 2;
             this.CollarTrackingPolarChart.Text = "chart1";
@@ -326,17 +323,6 @@
             this.CollarScanProgressBar.Name = "CollarScanProgressBar";
             this.CollarScanProgressBar.Size = new System.Drawing.Size(127, 23);
             this.CollarScanProgressBar.TabIndex = 4;
-            // 
-            // CollarTrackingTimeoutTimer
-            // 
-            this.CollarTrackingTimeoutTimer.Interval = 12000;
-            this.CollarTrackingTimeoutTimer.Tick += new System.EventHandler(this.CollarTrackingTimeoutTimer_Tick);
-            // 
-            // CollarTrackingConnectionTimer
-            // 
-            this.CollarTrackingConnectionTimer.Enabled = true;
-            this.CollarTrackingConnectionTimer.Interval = 1000;
-            this.CollarTrackingConnectionTimer.Tick += new System.EventHandler(this.CollarTrackingConnectionTimer_Tick);
             // 
             // CollarTrackingControl
             // 
@@ -371,8 +357,6 @@
         private System.Windows.Forms.Label CollarTrackingScanInfoLabel;
         private System.Windows.Forms.ProgressBar CollarScanProgressBar;
         private System.Windows.Forms.Label CollarFrequencyLabel;
-        private System.Windows.Forms.Timer CollarTrackingTimeoutTimer;
         private System.Windows.Forms.Label CollarTrackingConnectionLabel;
-        private System.Windows.Forms.Timer CollarTrackingConnectionTimer;
     }
 }

@@ -34,12 +34,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         Logging.Logging log;
 
-        /// <summary>
-        /// The timeout period for the Pi
-        /// to send an SNR value to the
-        /// base station
-        /// </summary>
-        int SCAN_TIMEOUT = 12;
+        System.Timers.Timer CollarTrackingTimeoutTimer = new System.Timers.Timer(7000);
 
         string LOG_LOCATION = @"C:\UAV\Log";
 
@@ -52,6 +47,8 @@ namespace MissionPlanner.CollarTrackingPlugin
             //Add MavLink RDF Received event handler
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
             ReadConfigFile();
+            CollarTrackingTimeoutTimer.Elapsed += CollarTrackingTimeoutTimer_Tick;
+            CollarTrackingTimeoutTimer.Enabled = false;
         }
 
         /// <summary>
@@ -98,7 +95,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
             CollarTrackingTimeoutTimer.Enabled = true;
-
+            CollarTrackingTimeoutTimer.Start();
             log = new Logging.Logging(LOG_LOCATION);
         }
 
@@ -125,6 +122,9 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <param name="e"></param>
         private void RDFData_Received(object sender, EventArgs e)
         {
+            CollarTrackingConnectionLabel.Text = "Receiving Pi data";
+            CollarTrackingConnectionLabel.BackColor = Color.Green;
+
             //Whatever the numberof values is divided by the number of intervals to perform
             this.CollarScanProgressBar.Value = (int)(MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() / (float)MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount()) * 100;
 
@@ -150,7 +150,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis();
 
                 CollarTrackingScanInfoLabel.Text = "D: " +
-                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
+                RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
                     "° from N | C: " +
                     (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") + 
                     "%";
@@ -159,13 +159,16 @@ namespace MissionPlanner.CollarTrackingPlugin
                 LogScan(true);
                 MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
                 CollarTrackingTimeoutTimer.Enabled = false;
+                CollarTrackingConnectionLabel.Text = "";
+                CollarTrackingConnectionLabel.BackColor = Color.Black;
             }
             else
             {
                 //The next WP should be YAW
                 MavLinkRDFCommunication.MavLinkRDFCommunication.GoToNextWayPoint();
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
-                CollarTrackingTimeoutTimer.Stop();
+                CollarTrackingTimeoutTimer.Enabled = false;
+                CollarTrackingTimeoutTimer.Enabled = true;
                 CollarTrackingTimeoutTimer.Start();
             }
         }
@@ -178,13 +181,12 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <param name="e"></param>
         private void CollarTrackingTimeoutTimer_Tick(object sender, EventArgs e)
         {
-            //Dont post data, just go to next position
-            RDFData_Received(new object(), new EventArgs());
-        }
-
-        private void CollarTrackingConnectionTimer_Tick(object sender, EventArgs e)
-        {
-
+            //Resend frequency since Pi probably restarted
+            //Try to do scan in direction again
+            CollarTrackingConnectionLabel.Text = "No data rcvd. Retrying...";
+            CollarTrackingConnectionLabel.BackColor = Color.Red;
+            MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
+            MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
         }
 
         /// <summary>
@@ -225,54 +227,64 @@ namespace MissionPlanner.CollarTrackingPlugin
 
             try
             {
-                file = new System.IO.StreamReader(CONFIG_FILE_LOCATION);
+                try
+                {
+                    file = new System.IO.StreamReader(CONFIG_FILE_LOCATION);
+                }
+                catch (FileNotFoundException fex)
+                {
+                    MessageBox.Show("Collar Tracking Control received exception: " + fex.Message);
+                    return;
+                }
+
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (line.ToUpper().Contains("SCAN_TIMEOUT="))
+                    {
+                        try
+                        {
+                            CollarTrackingTimeoutTimer.Interval = Convert.ToInt32(line.Replace("SCAN_TIMEOUT=", "")) * 1000;
+                        }
+                        catch (FormatException fex)
+                        {
+
+                        }
+                    }
+                    else if (line.ToUpper().Contains("COMP_ID="))
+                    {
+                        try
+                        {
+                            MavLinkRDFCommunication.MavLinkRDFCommunication.comp_id
+                                = Convert.ToInt32(line.Replace("COMP_ID=", ""));
+                        }
+                        catch (FormatException fex)
+                        {
+
+                        }
+                    }
+                    else if (line.ToUpper().Contains("RAD_PATTERN_FILE="))
+                    {
+                        try
+                        {
+                            RadiationPatternMatching.RadiationPatternMatching.AntennaPatternFile = line.Replace("RAD_PATTERN_FILE=", "");
+                            File.ReadLines(RadiationPatternMatching.RadiationPatternMatching.AntennaPatternFile);
+                        }
+                        catch (FileNotFoundException fex)
+                        {
+
+                        }
+                    }
+                    else if (line.ToUpper().Contains("LOG_DIR="))
+                    {
+                        LOG_LOCATION = line.Replace("LOG_DIR=", "");
+                    }
+                }
             }
-            catch (FileNotFoundException fex)
+
+            catch (Exception e)
             {
-                return;
-            }
-
-            while ((line = file.ReadLine()) != null)
-            {
-                if (line.ToLower().Contains("SCAN_TIMEOUT="))
-                {
-                    try
-                    {
-                        CollarTrackingTimeoutTimer.Interval = Convert.ToInt32(line.Replace("SCAN_TIMEOUT=", ""));
-                    }
-                    catch (FormatException fex)
-                    {
-
-                    }
-                }
-                else if (line.ToLower().Contains("COMP_ID="))
-                {
-                    try
-                    {
-                        MavLinkRDFCommunication.MavLinkRDFCommunication.comp_id 
-                            = Convert.ToInt32(line.Replace("COMP_ID=", ""));
-                    }
-                    catch (FormatException fex)
-                    {
-
-                    }
-                }
-                else if(line.ToLower().Contains("RAD_PATTERN_FILE="))
-                {
-                    try
-                    {
-                        RadiationPatternMatching.RadiationPatternMatching.AntennaPatternFile = line.Replace("COMP_ID=", "");
-                        File.ReadLines(RadiationPatternMatching.RadiationPatternMatching.AntennaPatternFile);
-                    }
-                    catch (FileNotFoundException fex)
-                    {
-
-                    }
-                }
-                else if (line.ToLower().Contains("LOG_DIR="))
-                {
-                    LOG_LOCATION = line.Replace("LOG_DIR=", "");
-                }
+                //Get any possible user exception
+                MessageBox.Show(e.Message);
             }
         }
 

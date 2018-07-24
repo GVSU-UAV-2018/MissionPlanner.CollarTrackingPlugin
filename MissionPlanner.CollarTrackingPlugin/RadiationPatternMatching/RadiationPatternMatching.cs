@@ -56,7 +56,6 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
             int i = 0;
             while((line = reader.ReadLine()) != null)
             {
-                KeyValuePair<int, float> point;
                 string[] split = line.Split(',');
                 try
                 {
