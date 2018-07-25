@@ -325,6 +325,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             try
             {
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkIFGain(Convert.ToInt32(IFGainTextBox.Text));
+                MessageBox.Show("IF Gain set to " + IFGainTextBox.Text);
             }
             catch(FormatException ex1)
             {
@@ -337,6 +338,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             try
             {
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(MixerGainTextBox.Text));
+                MessageBox.Show("Mixer Gain set to " + MixerGainTextBox.Text);
             }
             catch (FormatException ex1)
             {
@@ -349,6 +351,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             try
             {
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(LNAGainTextBox.Text));
+                MessageBox.Show("LNA Gain set to " + LNAGainTextBox.Text);
             }
             catch (FormatException ex1)
             {
