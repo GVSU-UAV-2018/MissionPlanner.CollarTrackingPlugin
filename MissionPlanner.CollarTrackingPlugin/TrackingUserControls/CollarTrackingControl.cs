@@ -34,7 +34,7 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         Logging.Logging log;
 
-        System.Timers.Timer CollarTrackingTimeoutTimer = new System.Timers.Timer(7000);
+        System.Timers.Timer CollarTrackingTimeoutTimer = new System.Timers.Timer(12000);
 
         string LOG_LOCATION = @"C:\UAV\Log";
 
@@ -90,6 +90,8 @@ namespace MissionPlanner.CollarTrackingPlugin
             UnlockButtons(false);
             //Clear all data contents before re-using
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
+            CollarTrackingPolarChart.Series[0].Points.Clear();
+            CollarScanProgressBar.Value = 0;
 
             MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(true);
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
@@ -122,11 +124,12 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <param name="e"></param>
         private void RDFData_Received(object sender, EventArgs e)
         {
+            CollarTrackingFrequencyTextBox.Text = MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP().ToString() + " | " + MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount();
             CollarTrackingConnectionLabel.Text = "Receiving Pi data";
             CollarTrackingConnectionLabel.BackColor = Color.Green;
 
             //Whatever the numberof values is divided by the number of intervals to perform
-            this.CollarScanProgressBar.Value = (int)(MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() / (float)MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount()) * 100;
+            this.CollarScanProgressBar.Value = (int)(((double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() / (double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount()) * 100);
 
             //rinse and repeat
             //0 index for series because only one series is used
@@ -144,17 +147,16 @@ namespace MissionPlanner.CollarTrackingPlugin
 
             //Complete
             if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() 
-                >= MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount() - 1)
+                >= (MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount() - 1))
             {
                 this.CollarScanProgressBar.Value = 100;
-                RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis();
 
+                RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis();
                 CollarTrackingScanInfoLabel.Text = "D: " +
                 RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
                     "° from N | C: " +
                     (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") + 
                     "%";
-
                 UnlockButtons(true);
                 LogScan(true);
                 MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
@@ -186,6 +188,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             CollarTrackingConnectionLabel.Text = "No data rcvd. Retrying...";
             CollarTrackingConnectionLabel.BackColor = Color.Red;
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
+            System.Threading.Thread.Sleep(250);
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
         }
 
@@ -315,6 +318,42 @@ namespace MissionPlanner.CollarTrackingPlugin
                     "Frequency, Completed?, Degrees from North,Confidence,Date/Time");
 
             File.AppendAllText(LOG_LOCATION + @"\" + FILE_NAME, appendedLine);
+        }
+
+        private void IFGainButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkIFGain(Convert.ToInt32(IFGainTextBox.Text));
+            }
+            catch(FormatException ex1)
+            {
+                MessageBox.Show("IF Gain not valid");
+            }
+        }
+
+        private void MixerGainButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(MixerGainTextBox.Text));
+            }
+            catch (FormatException ex1)
+            {
+                MessageBox.Show("Mixer Gain not valid");
+            }
+        }
+
+        private void LNAGainButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(LNAGainTextBox.Text));
+            }
+            catch (FormatException ex1)
+            {
+                MessageBox.Show("LNA Gain not valid");
+            }
         }
     }
 }

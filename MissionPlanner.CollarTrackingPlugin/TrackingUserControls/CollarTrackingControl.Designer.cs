@@ -45,6 +45,12 @@
             this.CollarTrackingPolarChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.CollarTrackingScanInfoLabel = new System.Windows.Forms.Label();
             this.CollarScanProgressBar = new System.Windows.Forms.ProgressBar();
+            this.IFGainButton = new System.Windows.Forms.Button();
+            this.IFGainTextBox = new System.Windows.Forms.RichTextBox();
+            this.MixerGainButton = new System.Windows.Forms.Button();
+            this.MixerGainTextBox = new System.Windows.Forms.RichTextBox();
+            this.LNAGainButton = new System.Windows.Forms.Button();
+            this.LNAGainTextBox = new System.Windows.Forms.RichTextBox();
             this.CollarTrackingControlPanel.SuspendLayout();
             this.CollarTrackingControlGroupBox.SuspendLayout();
             this.CollarTrackingControlGroupBoxPanel.SuspendLayout();
@@ -74,10 +80,16 @@
             this.CollarTrackingControlPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.CollarTrackingControlPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.CollarTrackingControlPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.CollarTrackingControlPanel.Controls.Add(this.LNAGainTextBox, 16, 0);
+            this.CollarTrackingControlPanel.Controls.Add(this.LNAGainButton, 14, 0);
+            this.CollarTrackingControlPanel.Controls.Add(this.MixerGainTextBox, 12, 0);
+            this.CollarTrackingControlPanel.Controls.Add(this.MixerGainButton, 10, 0);
             this.CollarTrackingControlPanel.Controls.Add(this.CollarTrackingControlGroupBox, 0, 0);
-            this.CollarTrackingControlPanel.Controls.Add(this.CollarTrackingPolarChart, 6, 0);
+            this.CollarTrackingControlPanel.Controls.Add(this.CollarTrackingPolarChart, 6, 2);
             this.CollarTrackingControlPanel.Controls.Add(this.CollarTrackingScanInfoLabel, 6, 19);
             this.CollarTrackingControlPanel.Controls.Add(this.CollarScanProgressBar, 16, 19);
+            this.CollarTrackingControlPanel.Controls.Add(this.IFGainButton, 6, 0);
+            this.CollarTrackingControlPanel.Controls.Add(this.IFGainTextBox, 8, 0);
             this.CollarTrackingControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CollarTrackingControlPanel.Location = new System.Drawing.Point(0, 0);
             this.CollarTrackingControlPanel.Name = "CollarTrackingControlPanel";
@@ -286,9 +298,9 @@
             this.CollarTrackingPolarChart.ChartAreas.Add(chartArea3);
             this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingPolarChart, 14);
             this.CollarTrackingPolarChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CollarTrackingPolarChart.Location = new System.Drawing.Point(177, 3);
+            this.CollarTrackingPolarChart.Location = new System.Drawing.Point(177, 35);
             this.CollarTrackingPolarChart.Name = "CollarTrackingPolarChart";
-            this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingPolarChart, 19);
+            this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingPolarChart, 17);
             series3.ChartArea = "ChartArea1";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
             series3.IsVisibleInLegend = false;
@@ -296,7 +308,7 @@
             series3.Name = "Series1";
             series3.Points.Add(dataPoint3);
             this.CollarTrackingPolarChart.Series.Add(series3);
-            this.CollarTrackingPolarChart.Size = new System.Drawing.Size(417, 298);
+            this.CollarTrackingPolarChart.Size = new System.Drawing.Size(417, 266);
             this.CollarTrackingPolarChart.TabIndex = 2;
             this.CollarTrackingPolarChart.Text = "chart1";
             // 
@@ -323,6 +335,78 @@
             this.CollarScanProgressBar.Name = "CollarScanProgressBar";
             this.CollarScanProgressBar.Size = new System.Drawing.Size(127, 23);
             this.CollarScanProgressBar.TabIndex = 4;
+            // 
+            // IFGainButton
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.IFGainButton, 2);
+            this.IFGainButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.IFGainButton.Location = new System.Drawing.Point(177, 3);
+            this.IFGainButton.Name = "IFGainButton";
+            this.CollarTrackingControlPanel.SetRowSpan(this.IFGainButton, 2);
+            this.IFGainButton.Size = new System.Drawing.Size(52, 26);
+            this.IFGainButton.TabIndex = 5;
+            this.IFGainButton.Text = "IF";
+            this.IFGainButton.UseVisualStyleBackColor = true;
+            this.IFGainButton.Click += new System.EventHandler(this.IFGainButton_Click);
+            // 
+            // IFGainTextBox
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.IFGainTextBox, 2);
+            this.IFGainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.IFGainTextBox.Location = new System.Drawing.Point(235, 3);
+            this.IFGainTextBox.Name = "IFGainTextBox";
+            this.CollarTrackingControlPanel.SetRowSpan(this.IFGainTextBox, 2);
+            this.IFGainTextBox.Size = new System.Drawing.Size(52, 26);
+            this.IFGainTextBox.TabIndex = 6;
+            this.IFGainTextBox.Text = "";
+            // 
+            // MixerGainButton
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.MixerGainButton, 2);
+            this.MixerGainButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MixerGainButton.Location = new System.Drawing.Point(293, 3);
+            this.MixerGainButton.Name = "MixerGainButton";
+            this.CollarTrackingControlPanel.SetRowSpan(this.MixerGainButton, 2);
+            this.MixerGainButton.Size = new System.Drawing.Size(52, 26);
+            this.MixerGainButton.TabIndex = 7;
+            this.MixerGainButton.Text = "Mixer";
+            this.MixerGainButton.UseVisualStyleBackColor = true;
+            this.MixerGainButton.Click += new System.EventHandler(this.MixerGainButton_Click);
+            // 
+            // MixerGainTextBox
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.MixerGainTextBox, 2);
+            this.MixerGainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MixerGainTextBox.Location = new System.Drawing.Point(351, 3);
+            this.MixerGainTextBox.Name = "MixerGainTextBox";
+            this.CollarTrackingControlPanel.SetRowSpan(this.MixerGainTextBox, 2);
+            this.MixerGainTextBox.Size = new System.Drawing.Size(52, 26);
+            this.MixerGainTextBox.TabIndex = 8;
+            this.MixerGainTextBox.Text = "";
+            // 
+            // LNAGainButton
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.LNAGainButton, 2);
+            this.LNAGainButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LNAGainButton.Location = new System.Drawing.Point(409, 3);
+            this.LNAGainButton.Name = "LNAGainButton";
+            this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainButton, 2);
+            this.LNAGainButton.Size = new System.Drawing.Size(52, 26);
+            this.LNAGainButton.TabIndex = 9;
+            this.LNAGainButton.Text = "LNA";
+            this.LNAGainButton.UseVisualStyleBackColor = true;
+            this.LNAGainButton.Click += new System.EventHandler(this.LNAGainButton_Click);
+            // 
+            // LNAGainTextBox
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.LNAGainTextBox, 2);
+            this.LNAGainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LNAGainTextBox.Location = new System.Drawing.Point(467, 3);
+            this.LNAGainTextBox.Name = "LNAGainTextBox";
+            this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainTextBox, 2);
+            this.LNAGainTextBox.Size = new System.Drawing.Size(52, 26);
+            this.LNAGainTextBox.TabIndex = 10;
+            this.LNAGainTextBox.Text = "";
             // 
             // CollarTrackingControl
             // 
@@ -358,5 +442,11 @@
         private System.Windows.Forms.ProgressBar CollarScanProgressBar;
         private System.Windows.Forms.Label CollarFrequencyLabel;
         private System.Windows.Forms.Label CollarTrackingConnectionLabel;
+        private System.Windows.Forms.RichTextBox LNAGainTextBox;
+        private System.Windows.Forms.Button LNAGainButton;
+        private System.Windows.Forms.RichTextBox MixerGainTextBox;
+        private System.Windows.Forms.Button MixerGainButton;
+        private System.Windows.Forms.Button IFGainButton;
+        private System.Windows.Forms.RichTextBox IFGainTextBox;
     }
 }

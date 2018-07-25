@@ -140,6 +140,83 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             return true;
         }
 
+        public static bool SendMavLinkIFGain(int gain)
+        {
+            //Setting IF Gain ID
+            byte[] paramid = new byte[16];
+            paramid[0] = (byte)'I';
+            paramid[1] = (byte)'F';
+            paramid[2] = (byte)'_';
+            paramid[3] = (byte)'G';
+            paramid[4] = (byte)'A';
+            paramid[5] = (byte)'I';
+            paramid[6] = (byte)'N';
+            paramid[7] = (byte)'\0';
+
+            MAVLink.mavlink_param_set_t setIFGain = new MAVLink.mavlink_param_set_t();
+            setIFGain.target_system = (byte)system_id; //Drone
+            setIFGain.target_component = (byte)comp_id; //Pi
+            setIFGain.param_id = paramid;
+            setIFGain.param_value = gain;
+            setIFGain.param_type = (byte)MAVLink.MAV_PARAM_TYPE.INT32;
+
+            MavLinkCom.sendPacket(setIFGain, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
+
+            return true;
+        }
+
+        public static bool SendMavLinkMixerGain(int gain)
+        {
+            //Setting IF Gain ID
+            byte[] paramid = new byte[16];
+            paramid[0] = (byte)'M';
+            paramid[1] = (byte)'I';
+            paramid[2] = (byte)'X';
+            paramid[3] = (byte)'_';
+            paramid[4] = (byte)'G';
+            paramid[5] = (byte)'A';
+            paramid[6] = (byte)'I';
+            paramid[7] = (byte)'N';
+            paramid[8] = (byte)'\0';
+
+            MAVLink.mavlink_param_set_t setMixerGain = new MAVLink.mavlink_param_set_t();
+            setMixerGain.target_system = (byte)system_id; //Drone
+            setMixerGain.target_component = (byte)comp_id; //Pi
+            setMixerGain.param_id = paramid;
+            setMixerGain.param_value = gain;
+            setMixerGain.param_type = (byte)MAVLink.MAV_PARAM_TYPE.INT32;
+
+            MavLinkCom.sendPacket(setMixerGain, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
+
+            return true;
+        }
+
+        public static bool SendMavLinkLNAGain(int gain)
+        {
+            //Setting IF Gain ID
+            byte[] paramid = new byte[16];
+            paramid[0] = (byte)'L';
+            paramid[1] = (byte)'N';
+            paramid[2] = (byte)'A';
+            paramid[3] = (byte)'_';
+            paramid[4] = (byte)'G';
+            paramid[5] = (byte)'A';
+            paramid[6] = (byte)'I';
+            paramid[7] = (byte)'N';
+            paramid[8] = (byte)'\0';
+
+            MAVLink.mavlink_param_set_t setLNAGain = new MAVLink.mavlink_param_set_t();
+            setLNAGain.target_system = (byte)system_id; //Drone
+            setLNAGain.target_component = (byte)comp_id; //Pi
+            setLNAGain.param_id = paramid;
+            setLNAGain.param_value = gain;
+            setLNAGain.param_type = (byte)MAVLink.MAV_PARAM_TYPE.INT32;
+
+            MavLinkCom.sendPacket(setLNAGain, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
+
+            return true;
+        }
+
         /// <summary>
         /// Send signal to drone to perform RDF scan.
         /// </summary>
@@ -173,6 +250,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                         RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
 
                         RDFDataReceived(new object(), new EventArgs());
+                        SendVHF_FREQPiAcknowledge(SNR);
                     //}
                 }
             }
@@ -182,6 +260,27 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                 MAVLink.mavlink_mission_current_t mission_current_msg = (MAVLink.mavlink_mission_current_t)msg.data;
                 current_wp = mission_current_msg.seq;
             }
+        }
+
+        private static void SendVHF_FREQPiAcknowledge(float value)
+        {
+            MAVLink.mavlink_param_value_t ack = new MAVLink.mavlink_param_value_t();
+            //Struct for sending collar frequency to RDF system
+            //This should be good to go based on prev groups design
+            byte[] paramid = new byte[16];
+            paramid[0] = (byte)'V';
+            paramid[1] = (byte)'H';
+            paramid[2] = (byte)'F';
+            paramid[3] = (byte)'_';
+            paramid[4] = (byte)'F';
+            paramid[5] = (byte)'R';
+            paramid[6] = (byte)'E';
+            paramid[7] = (byte)'Q';
+            paramid[8] = (byte)'\0';
+
+            ack.param_id = paramid;
+            ack.param_value = value;
+            MavLinkCom.sendPacket(ack, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
         }
     }
 }
