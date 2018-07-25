@@ -80,24 +80,25 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             if (VerifyFrequency())
             {
-                CollarTrackingFrequencyTextBox.BackColor = Color.Green;
                 this.CollarFrequencyLabel.Text = CollarTrackingFrequencyTextBox.Text + " MHz";
                 SelectedCollarFrequency = (float)Convert.ToDouble(this.CollarTrackingFrequencyTextBox.Text);
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
 
                 CommandTimeoutTimer.Enabled = true;
 
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.vhf_freq_state_changed ||
+                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.vhf_freq_state_changed &&
                     !command_timeout) ;
                 if (MavLinkRDFCommunication.MavLinkRDFCommunication.vhf_freq_state_changed)
                 {
                     MessageBox.Show("Frequency set to " + CollarTrackingFrequencyTextBox.Text);
                     MavLinkRDFCommunication.MavLinkRDFCommunication.vhf_freq_state_changed = false;
                     this.CollarTrackingStartScanButton.Enabled = true;
+                    CollarTrackingFrequencyTextBox.BackColor = Color.Green;
                 }
                 else
                 {
                     MessageBox.Show("Frequency set failed");
+                    CollarTrackingFrequencyTextBox.BackColor = Color.Red;
                 }
                 CommandTimeoutTimer.Enabled = false;
                 command_timeout = false;
@@ -377,7 +378,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkIFGain(Convert.ToInt32(IFGainTextBox.Text));
                 CommandTimeoutTimer.Enabled = true;
 
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.if_gain_state_changed ||
+                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.if_gain_state_changed &&
                     !command_timeout) ;
                 if (MavLinkRDFCommunication.MavLinkRDFCommunication.if_gain_state_changed)
                 {
@@ -410,7 +411,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(MixerGainTextBox.Text));
                 CommandTimeoutTimer.Enabled = true;
 
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.mixer_gain_state_changed ||
+                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.mixer_gain_state_changed &&
                     !command_timeout) ;
                 if (MavLinkRDFCommunication.MavLinkRDFCommunication.mixer_gain_state_changed)
                 {
@@ -442,7 +443,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(LNAGainTextBox.Text));
                 CommandTimeoutTimer.Enabled = true;
 
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.lna_gain_state_changed ||
+                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.lna_gain_state_changed &&
                     !command_timeout) ;
                 if (MavLinkRDFCommunication.MavLinkRDFCommunication.lna_gain_state_changed)
                 {
