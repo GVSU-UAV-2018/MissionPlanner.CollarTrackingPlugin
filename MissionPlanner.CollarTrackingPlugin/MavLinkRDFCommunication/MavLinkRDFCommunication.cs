@@ -240,7 +240,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// <returns></returns>
         private static void MavLinkPacketReceived_Handler(object o, MAVLink.MAVLinkMessage msg)
         {
-            if (msg.sysid == system_id && msg.compid == comp_id) //Find enum for this and make ids configurable
+            if (msg.sysid == system_id && msg.compid == comp_id) //Get Pi messages
             {
                 //Received values from Pi
                 if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_SET)

@@ -29,7 +29,7 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
         /// <summary>
         /// File to compare retreived signals wth.
         /// </summary>
-        public static string AntennaPatternFile = @"C:\Yagi_3Elm_RadPattern.csv";
+        public static string AntennaPatternFile = @"C:\UAV\Yagi_3Elm_RadPattern.csv";
 
         /// <summary>
         /// Constructor

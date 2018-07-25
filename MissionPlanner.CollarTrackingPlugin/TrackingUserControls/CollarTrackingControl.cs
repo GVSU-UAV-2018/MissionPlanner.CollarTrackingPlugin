@@ -349,19 +349,19 @@ namespace MissionPlanner.CollarTrackingPlugin
                 appendedLine = CollarTrackingFrequencyTextBox.Text + ", Completed, " +
                     RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
                     RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +
-                    DateTime.Now.ToString();
+                    DateTime.Now.ToString() + "\n";
             }
             else
             {
                 appendedLine = CollarTrackingFrequencyTextBox.Text + ", Cancelled, " +
                 0 + "," +
                 0 + "," +
-                DateTime.Now.ToString();
+                DateTime.Now.ToString() + "\n";
             }
 
             if (!File.Exists(LOG_LOCATION + @"\" + FILE_NAME))
                 File.WriteAllText(LOG_LOCATION + @"\" + FILE_NAME,
-                    "Frequency, Completed?, Degrees from North,Confidence,Date/Time");
+                    "Frequency, Completed?, Degrees from North,Confidence,Date/Time\n");
 
             File.AppendAllText(LOG_LOCATION + @"\" + FILE_NAME, appendedLine);
         }
