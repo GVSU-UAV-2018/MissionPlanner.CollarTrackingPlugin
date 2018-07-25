@@ -43,14 +43,6 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// </summary>
         System.Timers.Timer CollarTrackingTimeoutTimer = new System.Timers.Timer(12000);
 
-        /// <summary>
-        /// Timer for timeout during a button click for Pi paramter.
-        /// </summary>
-        System.Timers.Timer CommandTimeoutTimer = new System.Timers.Timer(1000);
-
-        //Timeout global variable
-        bool command_timeout = false;
-
         //Default logging location
         string LOG_LOCATION = @"C:\UAV\Log";
 
@@ -61,12 +53,9 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             InitializeComponent();
             //Add MavLink RDF Received event handler
-            MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
             ReadConfigFile();
             CollarTrackingTimeoutTimer.Elapsed += CollarTrackingTimeoutTimer_Tick;
-            CommandTimeoutTimer.Elapsed += CommandTimeoutTimer_Tick;
             CollarTrackingTimeoutTimer.Enabled = false;
-            CommandTimeoutTimer.Enabled = false;
         }
 
         /// <summary>
@@ -82,16 +71,10 @@ namespace MissionPlanner.CollarTrackingPlugin
             {
                 this.CollarFrequencyLabel.Text = CollarTrackingFrequencyTextBox.Text + " MHz";
                 SelectedCollarFrequency = (float)Convert.ToDouble(this.CollarTrackingFrequencyTextBox.Text);
-                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
 
-                CommandTimeoutTimer.Enabled = true;
-
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.vhf_freq_state_changed &&
-                    !command_timeout) ;
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.vhf_freq_state_changed)
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency))
                 {
                     MessageBox.Show("Frequency set to " + CollarTrackingFrequencyTextBox.Text);
-                    MavLinkRDFCommunication.MavLinkRDFCommunication.vhf_freq_state_changed = false;
                     this.CollarTrackingStartScanButton.Enabled = true;
                     CollarTrackingFrequencyTextBox.BackColor = Color.Green;
                 }
@@ -100,8 +83,6 @@ namespace MissionPlanner.CollarTrackingPlugin
                     MessageBox.Show("Frequency set failed");
                     CollarTrackingFrequencyTextBox.BackColor = Color.Red;
                 }
-                CommandTimeoutTimer.Enabled = false;
-                command_timeout = false;
             }
             else
             {
@@ -128,7 +109,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             CollarTrackingPolarChart.Series[0].Points.Clear();
             CollarScanProgressBar.Value = 0;
 
-            MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(true);
+            MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
             CollarTrackingTimeoutTimer.Enabled = true;
@@ -147,7 +128,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             LogScan(false);
             CollarTrackingTimeoutTimer.Enabled = false;
-            MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
+            MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived -= RDFData_Received;
             UnlockButtons(true);
         }
 
@@ -194,7 +175,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                     "%";
                 UnlockButtons(true);
                 LogScan(true);
-                MavLinkRDFCommunication.MavLinkRDFCommunication.CaptureRDFData(false);
+                MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived -= RDFData_Received;
                 CollarTrackingTimeoutTimer.Enabled = false;
                 CollarTrackingConnectionLabel.Text = "";
                 CollarTrackingConnectionLabel.BackColor = Color.Black;
@@ -225,17 +206,6 @@ namespace MissionPlanner.CollarTrackingPlugin
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
             System.Threading.Thread.Sleep(250);
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
-        }
-
-        /// <summary>
-        /// Sets timeout to true when a button is clicked
-        /// but no acknowledge is received.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CommandTimeoutTimer_Tick(object sender, EventArgs e)
-        {
-            command_timeout = true;
         }
 
         /// <summary>
@@ -375,22 +345,14 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             try
             {
-                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkIFGain(Convert.ToInt32(IFGainTextBox.Text));
-                CommandTimeoutTimer.Enabled = true;
-
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.if_gain_state_changed &&
-                    !command_timeout) ;
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.if_gain_state_changed)
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkIFGain(Convert.ToInt32(IFGainTextBox.Text)))
                 {
                     MessageBox.Show("IF Gain set to " + IFGainTextBox.Text);
-                    MavLinkRDFCommunication.MavLinkRDFCommunication.if_gain_state_changed = false;
                 }
                 else
                 {
                     MessageBox.Show("IF Gain set failed");
                 }
-                CommandTimeoutTimer.Enabled = false;
-                command_timeout = false;
 
             }
             catch(FormatException ex1)
@@ -408,22 +370,15 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             try
             {
-                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(MixerGainTextBox.Text));
-                CommandTimeoutTimer.Enabled = true;
-
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.mixer_gain_state_changed &&
-                    !command_timeout) ;
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.mixer_gain_state_changed)
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(IFGainTextBox.Text)))
                 {
                     MessageBox.Show("Mixer Gain set to " + MixerGainTextBox.Text);
-                    MavLinkRDFCommunication.MavLinkRDFCommunication.mixer_gain_state_changed = false;
                 }
                 else
                 {
                     MessageBox.Show("Mixer Gain set failed");
                 }
-                CommandTimeoutTimer.Enabled = false;
-                command_timeout = false;
+
             }
             catch (FormatException ex1)
             {
@@ -440,22 +395,15 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             try
             {
-                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(LNAGainTextBox.Text));
-                CommandTimeoutTimer.Enabled = true;
-
-                while (!MavLinkRDFCommunication.MavLinkRDFCommunication.lna_gain_state_changed &&
-                    !command_timeout) ;
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.lna_gain_state_changed)
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(IFGainTextBox.Text)))
                 {
                     MessageBox.Show("LNA Gain set to " + LNAGainTextBox.Text);
-                    MavLinkRDFCommunication.MavLinkRDFCommunication.lna_gain_state_changed = false;
                 }
                 else
                 {
                     MessageBox.Show("LNA Gain set failed");
                 }
-                CommandTimeoutTimer.Enabled = false;
-                command_timeout = false;
+
             }
             catch (FormatException ex1)
             {
