@@ -49,6 +49,12 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// </summary>
         public static int current_wp = 0;
 
+        //State variables that report if Pi succesfully changed param values
+        public static bool vhf_freq_state_changed = false;
+        public static bool if_gain_state_changed = false;
+        public static bool mixer_gain_state_changed = false;
+        public static bool lna_gain_state_changed = false;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -85,9 +91,9 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         public static void CaptureRDFData(bool doCapture)
         {
             if(doCapture)
-                MavLinkCom.OnPacketReceived += RetreiveBearingStatus_Handler;
+                MavLinkCom.OnPacketReceived += MavLinkPacketReceived_Handler;
             else
-                MavLinkCom.OnPacketReceived -= RetreiveBearingStatus_Handler;
+                MavLinkCom.OnPacketReceived -= MavLinkPacketReceived_Handler;
         }
 
         /// <summary>
@@ -232,16 +238,16 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// </summary>
         /// <param name="data">A MAVLink message of the data.</param>
         /// <returns></returns>
-        private static void RetreiveBearingStatus_Handler(object o, MAVLink.MAVLinkMessage msg)
+        private static void MavLinkPacketReceived_Handler(object o, MAVLink.MAVLinkMessage msg)
         {
             if (msg.sysid == system_id && msg.compid == comp_id) //Find enum for this and make ids configurable
             {
                 //Received values from Pi
-                if(msg.msgid == 23)
+                if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_SET)
                 {
                     MAVLink.mavlink_param_set_t param_set_msg = (MAVLink.mavlink_param_set_t)msg.data;
-                    //if (String.Equals(System.Text.Encoding.Default.GetString(param_set_msg.param_id).Trim(), "VHF_SNR"))
-                    //{
+                    if (param_set_msg.param_id.Equals("VHF_SNR"))
+                    {
                         int direction;
                         float SNR;
                         direction = (int)MavLinkCom.MAV.cs.yaw; //current state of drone
@@ -251,17 +257,42 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
                         RDFDataReceived(new object(), new EventArgs());
                         SendVHF_FREQPiAcknowledge(SNR);
-                    //}
+                    }
+                }
+                else if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_VALUE)
+                {
+                    MAVLink.mavlink_param_value_t param_value_msg = (MAVLink.mavlink_param_value_t)msg.data;
+
+                    if(param_value_msg.param_id.Equals("VHF_FREQ"))
+                    {
+                        vhf_freq_state_changed = true;
+                    }
+                    else if (param_value_msg.param_id.Equals("IF_GAIN"))
+                    {
+                        if_gain_state_changed = true;
+                    }
+                    else if (param_value_msg.param_id.Equals("MIX_GAIN"))
+                    {
+                        mixer_gain_state_changed = true;
+                    }
+                    else if (param_value_msg.param_id.Equals("LNA_GAIN"))
+                    {
+                        lna_gain_state_changed = true;
+                    }
                 }
             }
 
-            if(msg.msgid == 42)
+            if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.MISSION_CURRENT)
             {
                 MAVLink.mavlink_mission_current_t mission_current_msg = (MAVLink.mavlink_mission_current_t)msg.data;
                 current_wp = mission_current_msg.seq;
             }
         }
 
+        /// <summary>
+        /// Sends a param_value to pi as an acknowledgement.
+        /// </summary>
+        /// <param name="value"></param>
         private static void SendVHF_FREQPiAcknowledge(float value)
         {
             MAVLink.mavlink_param_value_t ack = new MAVLink.mavlink_param_value_t();
