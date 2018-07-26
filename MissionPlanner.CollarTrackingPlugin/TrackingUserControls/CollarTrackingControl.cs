@@ -130,6 +130,8 @@ namespace MissionPlanner.CollarTrackingPlugin
             CollarTrackingTimeoutTimer.Enabled = false;
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived -= RDFData_Received;
             UnlockButtons(true);
+
+            CollarScanProgressBar.Value = 0;
         }
 
         /// <summary>
@@ -140,7 +142,6 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <param name="e"></param>
         private void RDFData_Received(object sender, EventArgs e)
         {
-            CollarTrackingFrequencyTextBox.Text = MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP().ToString() + " | " + MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount();
             CollarTrackingConnectionLabel.Text = "Receiving Pi data";
             CollarTrackingConnectionLabel.BackColor = Color.Green;
 

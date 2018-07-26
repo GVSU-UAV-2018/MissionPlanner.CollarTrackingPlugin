@@ -63,6 +63,8 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         private static bool mixer_gain_state_changed = false;
         private static bool lna_gain_state_changed = false;
 
+        private static uint prev_msg_id;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -323,23 +325,68 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         {
             if (msg.sysid == system_id && msg.compid == comp_id) //Get Pi messages
             {
+                if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.MEMORY_VECT)
+                {
+                    MAVLink.mavlink_memory_vect_t mem_vect_msg = (MAVLink.mavlink_memory_vect_t)msg.data;
+                    byte[] mem_vect_data = mem_vect_msg.value;
+                    ushort mem_vect_addr = mem_vect_msg.address;
+
+                    float SNR = 0;
+                    uint msg_id;
+                    int direction = 0;
+
+                    if (System.BitConverter.IsLittleEndian)
+                    {
+                        byte temp = mem_vect_data[0];
+                        mem_vect_data[0] = mem_vect_data[3];
+                        mem_vect_data[3] = temp;
+                        temp = mem_vect_data[1];
+                        mem_vect_data[1] = mem_vect_data[2];
+                        mem_vect_data[2] = temp;
+                    }
+
+                    SNR = System.BitConverter.ToSingle(mem_vect_data, 0);
+                    msg_id = mem_vect_addr;
+
+                    SendVHF_SNRPiAcknowledge(SNR);
+                    direction = (int)(Math.Round(MavLinkCom.MAV.cs.yaw / 5.0) * 5); //current state of drone
+
+                    //We do not want double SNR data recorded
+                    if (prev_msg_id != msg_id)
+                    {
+                        prev_msg_id = msg_id;
+                        RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
+                        RDFDataReceived(new object(), new EventArgs());
+                    }
+
+                    prev_msg_id = msg_id;
+                }
                 //Received values from Pi
-                if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_SET)
+                /*if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_SET)
                 {
                     MAVLink.mavlink_param_set_t param_set_msg = (MAVLink.mavlink_param_set_t)msg.data;
-                    if (param_set_msg.param_id.Equals("VHF_SNR"))
+                    string param_id = System.Text.Encoding.Default.GetString(param_set_msg.param_id).Trim().ToUpper();
+
+                    if (param_id[0] == 'V' && param_id[1] == 'H' 
+                        && param_id[2] == 'F')
                     {
                         int direction;
                         float SNR;
                         direction = (int)MavLinkCom.MAV.cs.yaw; //current state of drone
                         SNR = (float)Convert.ToDouble(param_set_msg.param_value); //this may need further conversion if payload is more than just SNR
-                        
-                        RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
 
-                        RDFDataReceived(new object(), new EventArgs());
+                        //We do not want double SNR data recorded
+                        if (prev_msg_id != msg.msgid)
+                        {
+                            RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
+                            RDFDataReceived(new object(), new EventArgs());
+
+                            System.Windows.Forms.MessageBox.Show("Pi SNR: " + SNR);
+                        }
+
                         SendVHF_SNRPiAcknowledge(SNR);
                     }
-                }
+                }*/
                 else if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_VALUE)
                 {
                     MAVLink.mavlink_param_value_t param_value_msg = (MAVLink.mavlink_param_value_t)msg.data;
