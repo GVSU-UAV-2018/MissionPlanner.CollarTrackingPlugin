@@ -44,6 +44,8 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// </summary>
         public static int comp_id = 177;
 
+        static float direction_resolution = 5.0f;
+
         /// <summary>
         /// The current waypoint the system is executing.
         /// </summary>
@@ -73,6 +75,16 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             CommandTimeoutTimer.Enabled = false;
         }
 
+        public static void SetDirectionResolution(float degrees)
+        {
+            direction_resolution = degrees;
+        }
+
+        public static float GetDirectionResolution()
+        {
+            return direction_resolution;
+        }
+
         /// <summary>
         /// Gets the current waypoint that the drone is 
         /// executing.
@@ -90,15 +102,42 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// <returns></returns>
         public static int GetWPCount()
         {
-            return MavLinkCom.getWPCount();
+            return (int)(360.0f / GetDirectionResolution());
+        }
+
+        public static bool GoToWayPoint(int n)
+        {
+            if(n < 0 || n >= GetWPCount())
+            {
+                return false;
+            }
+            // THIS WILL BLOCK! hopefully OK
+            if(MavLinkCom.doCommand(
+                system_id,
+                0,
+                MAV_CMD.CONDITION_YAW,
+                n * GetDirectionResolution(), // yaw angle
+                10,                           // yaw rate
+                1,                            // direction (1 is clockwise)
+                0,                            // reference frame (0 is absolute)
+                0, 0, 0,                      // unused
+                true))                        // require ack
+            {
+                current_wp = n;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
         /// Sets the drone to perform the next waypoint.
         /// </summary>
-        public static void GoToNextWayPoint()
+        public static bool GoToNextWayPoint()
         {
-            MavLinkCom.setWPCurrent((ushort)(GetCurrentWP() + 1)); //I think this is correct way to get curr wp
+            return GoToWayPoint(GetCurrentWP() + 1);
         }
 
         /// <summary>
@@ -107,8 +146,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// <returns></returns>
         public static bool ResetFlightPlan()
         {
-            MavLinkCom.setWPCurrent(1); //Based on Mission Planner button click event. 1 is yaw to zero
-            return true;
+            return GoToWayPoint(0);
         }
 
         /// <summary>
@@ -365,12 +403,6 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                         lna_gain_state_changed = true;
                     }
                 }
-            }
-
-            if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.MISSION_CURRENT)
-            {
-                MAVLink.mavlink_mission_current_t mission_current_msg = (MAVLink.mavlink_mission_current_t)msg.data;
-                current_wp = mission_current_msg.seq;
             }
         }
 
