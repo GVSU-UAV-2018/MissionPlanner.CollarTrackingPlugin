@@ -11,8 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -29,9 +27,9 @@ namespace MissionPlanner.CollarTrackingPlugin
         [Description("The selected collar frequency to be scanned."),Category("Data")] 
         public float SelectedCollarFrequency
         { get; set; }
-
         #endregion
-
+ 
+        #region Globals
         /// <summary>
         /// Instance for logging data
         /// points for a scan.
@@ -45,7 +43,9 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         //Default logging location
         string LOG_LOCATION = @"C:\UAV\Log";
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
@@ -57,7 +57,9 @@ namespace MissionPlanner.CollarTrackingPlugin
             CollarTrackingTimeoutTimer.Elapsed += CollarTrackingTimeoutTimer_Tick;
             CollarTrackingTimeoutTimer.Enabled = false;
         }
+        #endregion
 
+        #region Handlers
         /// <summary>
         /// Event Handler: Sends the frequency in
         /// the Collar Tracking text box to the
@@ -107,10 +109,12 @@ namespace MissionPlanner.CollarTrackingPlugin
             //Clear all data contents before re-using
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
             CollarTrackingPolarChart.Series[0].Points.Clear();
+            CollarTrackingConnectionLabel.Text = "";
+            CollarTrackingConnectionLabel.BackColor = Color.Black;
             CollarScanProgressBar.Value = 0;
 
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
-            MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlightPlan(); //Reset flight plan assuming it remains at altitude
+            MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlight(); //Reset flight assuming it remains at altitude
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
             CollarTrackingTimeoutTimer.Enabled = true;
             CollarTrackingTimeoutTimer.Start();
@@ -146,13 +150,13 @@ namespace MissionPlanner.CollarTrackingPlugin
             CollarTrackingConnectionLabel.BackColor = Color.Green;
 
             //Whatever the numberof values is divided by the number of intervals to perform
-            this.CollarScanProgressBar.Value = (int)(((double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() / (double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount()) * 100);
+            this.CollarScanProgressBar.Value = (int)(((double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn() / (double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns()) * 100);
 
             //rinse and repeat
             //0 index for series because only one series is used
             //for our needs
             CollarTrackingPolarChart.Series[0].Points.Clear();
-            float min = 1000;
+            float min = 100000;
             foreach(KeyValuePair<int, float> kvp in MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData)
             {
                 CollarTrackingPolarChart.Series[0].Points.AddXY(kvp.Key, kvp.Value);
@@ -163,8 +167,8 @@ namespace MissionPlanner.CollarTrackingPlugin
             CollarTrackingPolarChart.ChartAreas[0].AxisY.Minimum = (int)(min - 1);
 
             //Complete
-            if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentWP() 
-                >= (MavLinkRDFCommunication.MavLinkRDFCommunication.GetWPCount() - 1))
+            if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn() 
+                == (MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns() - 1))
             {
                 this.CollarScanProgressBar.Value = 100;
 
@@ -184,7 +188,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             else
             {
                 //The next WP should be YAW
-                MavLinkRDFCommunication.MavLinkRDFCommunication.GoToNextWayPoint();
+                MavLinkRDFCommunication.MavLinkRDFCommunication.GoToNextTurn();
                 MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
                 CollarTrackingTimeoutTimer.Enabled = false;
                 CollarTrackingTimeoutTimer.Enabled = true;
@@ -205,10 +209,86 @@ namespace MissionPlanner.CollarTrackingPlugin
             CollarTrackingConnectionLabel.Text = "No data rcvd. Retrying...";
             CollarTrackingConnectionLabel.BackColor = Color.Red;
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
-            System.Threading.Thread.Sleep(250);
             MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
         }
 
+        /// <summary>
+        /// Event Handler: IF Gain click handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void IFGainButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkIFGain(Convert.ToInt32(IFGainTextBox.Text)))
+                {
+                    MessageBox.Show("IF Gain set to " + IFGainTextBox.Text);
+                }
+                else
+                {
+                    MessageBox.Show("IF Gain set failed");
+                }
+
+            }
+            catch(FormatException ex1)
+            {
+                MessageBox.Show("IF Gain not valid");
+            }
+        }
+
+        /// <summary>
+        /// Event Handler: Mixer Gain click handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MixerGainButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(IFGainTextBox.Text)))
+                {
+                    MessageBox.Show("Mixer Gain set to " + MixerGainTextBox.Text);
+                }
+                else
+                {
+                    MessageBox.Show("Mixer Gain set failed");
+                }
+
+            }
+            catch (FormatException ex1)
+            {
+                MessageBox.Show("Mixer Gain not valid");
+            }
+        }
+
+        /// <summary>
+        /// Event Handler: LNA Gain click handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LNAGainButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(IFGainTextBox.Text)))
+                {
+                    MessageBox.Show("LNA Gain set to " + LNAGainTextBox.Text);
+                }
+                else
+                {
+                    MessageBox.Show("LNA Gain set failed");
+                }
+
+            }
+            catch (FormatException ex1)
+            {
+                MessageBox.Show("LNA Gain not valid");
+            }
+        }
+        #endregion
+
+        #region Helpers
         /// <summary>
         /// Places the user interface in mode specific
         /// to the system's current state.
@@ -336,80 +416,6 @@ namespace MissionPlanner.CollarTrackingPlugin
 
             File.AppendAllText(LOG_LOCATION + @"\" + FILE_NAME, appendedLine);
         }
-
-        /// <summary>
-        /// Event Handler: IF Gain click handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void IFGainButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkIFGain(Convert.ToInt32(IFGainTextBox.Text)))
-                {
-                    MessageBox.Show("IF Gain set to " + IFGainTextBox.Text);
-                }
-                else
-                {
-                    MessageBox.Show("IF Gain set failed");
-                }
-
-            }
-            catch(FormatException ex1)
-            {
-                MessageBox.Show("IF Gain not valid");
-            }
-        }
-
-        /// <summary>
-        /// Event Handler: Mixer Gain click handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MixerGainButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(IFGainTextBox.Text)))
-                {
-                    MessageBox.Show("Mixer Gain set to " + MixerGainTextBox.Text);
-                }
-                else
-                {
-                    MessageBox.Show("Mixer Gain set failed");
-                }
-
-            }
-            catch (FormatException ex1)
-            {
-                MessageBox.Show("Mixer Gain not valid");
-            }
-        }
-
-        /// <summary>
-        /// Event Handler: LNA Gain click handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LNAGainButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(IFGainTextBox.Text)))
-                {
-                    MessageBox.Show("LNA Gain set to " + LNAGainTextBox.Text);
-                }
-                else
-                {
-                    MessageBox.Show("LNA Gain set failed");
-                }
-
-            }
-            catch (FormatException ex1)
-            {
-                MessageBox.Show("LNA Gain not valid");
-            }
-        }
+        #endregion
     }
 }

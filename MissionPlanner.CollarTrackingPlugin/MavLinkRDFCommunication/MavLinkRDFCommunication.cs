@@ -44,12 +44,15 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// </summary>
         public static int comp_id = 177;
 
+        /// <summary>
+        /// The resolution for the drone to do a scan in.
+        /// </summary>
         static float direction_resolution = 5.0f;
 
         /// <summary>
-        /// The current waypoint the system is executing.
+        /// The current turn the system is executing.
         /// </summary>
-        public static int current_wp = 0;
+        static int current_turn = 0;
 
         /// <summary>
         /// Timer for timeout during a button click for Pi paramter.
@@ -88,28 +91,34 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         }
 
         /// <summary>
-        /// Gets the current waypoint that the drone is 
+        /// Gets the current turn that the drone is 
         /// executing.
         /// </summary>
         /// <returns></returns>
-        public static int GetCurrentWP()
+        public static int GetCurrentTurn()
         {
-            return current_wp;
+            return current_turn;
         }
 
         /// <summary>
-        /// Gets the total amount of waypoints
-        /// in the flight plan.
+        /// Gets the total amount of turns the
+        /// drone will perform.
         /// </summary>
         /// <returns></returns>
-        public static int GetWPCount()
+        public static int GetNumberOfTurns()
         {
             return (int)(360.0f / GetDirectionResolution());
         }
 
-        public static bool GoToWayPoint(int n)
+        /// <summary>
+        /// Commands the drone to turn to the specified
+        /// turn, a.k.a turn * degree interval.
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <returns></returns>
+        public static bool GoToTurn(int turn)
         {
-            if(n < 0 || n >= GetWPCount())
+            if(turn < 0 || turn >= GetNumberOfTurns())
             {
                 return false;
             }
@@ -117,15 +126,15 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             if(MavLinkCom.doCommand(
                 system_id,
                 0,
-                MAV_CMD.CONDITION_YAW,
-                n * GetDirectionResolution(), // yaw angle
+                MAVLink.MAV_CMD.CONDITION_YAW,
+                turn * GetDirectionResolution(), // yaw angle
                 10,                           // yaw rate
                 1,                            // direction (1 is clockwise)
                 0,                            // reference frame (0 is absolute)
                 0, 0, 0,                      // unused
                 true))                        // require ack
             {
-                current_wp = n;
+                current_turn = turn;
                 return true;
             }
             else
@@ -135,20 +144,20 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         }
 
         /// <summary>
-        /// Sets the drone to perform the next waypoint.
+        /// Sets the drone to perform the next turn.
         /// </summary>
-        public static bool GoToNextWayPoint()
+        public static bool GoToNextTurn()
         {
-            return GoToWayPoint(GetCurrentWP() + 1);
+            return GoToTurn(GetCurrentTurn() + 1);
         }
 
         /// <summary>
         /// Resets the flight plan to the first waypoint.
         /// </summary>
         /// <returns></returns>
-        public static bool ResetFlightPlan()
+        public static bool ResetFlight()
         {
-            return GoToWayPoint(0);
+            return GoToTurn(0);
         }
 
         /// <summary>
@@ -159,7 +168,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         public static bool SendMavLinkFrequency(float frequency)
         {
             //Struct for sending collar frequency to RDF system
-            //This should be good to go based on prev groups design
+            //Has to be exactly 16 bytes
             byte[] paramid = new byte[16];
             paramid[0] = (byte)'V';
             paramid[1] = (byte)'H';
@@ -375,6 +384,8 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
                     if (System.BitConverter.IsLittleEndian)
                     {
+                        //First four bytes are float
+                        //Only swap first four
                         byte temp = mem_vect_data[0];
                         mem_vect_data[0] = mem_vect_data[3];
                         mem_vect_data[3] = temp;
@@ -399,32 +410,6 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
                     prev_msg_id = msg_id;
                 }
-                //Received values from Pi
-                /*if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_SET)
-                {
-                    MAVLink.mavlink_param_set_t param_set_msg = (MAVLink.mavlink_param_set_t)msg.data;
-                    string param_id = System.Text.Encoding.Default.GetString(param_set_msg.param_id).Trim().ToUpper();
-
-                    if (param_id[0] == 'V' && param_id[1] == 'H' 
-                        && param_id[2] == 'F')
-                    {
-                        int direction;
-                        float SNR;
-                        direction = (int)MavLinkCom.MAV.cs.yaw; //current state of drone
-                        SNR = (float)Convert.ToDouble(param_set_msg.param_value); //this may need further conversion if payload is more than just SNR
-
-                        //We do not want double SNR data recorded
-                        if (prev_msg_id != msg.msgid)
-                        {
-                            RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
-                            RDFDataReceived(new object(), new EventArgs());
-
-                            System.Windows.Forms.MessageBox.Show("Pi SNR: " + SNR);
-                        }
-
-                        SendVHF_SNRPiAcknowledge(SNR);
-                    }
-                }*/
                 else if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_VALUE)
                 {
                     MAVLink.mavlink_param_value_t param_value_msg = (MAVLink.mavlink_param_value_t)msg.data;
