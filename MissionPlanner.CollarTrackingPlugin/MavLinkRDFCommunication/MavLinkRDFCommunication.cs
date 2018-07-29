@@ -132,7 +132,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                 1,                            // direction (1 is clockwise)
                 0,                            // reference frame (0 is absolute)
                 0, 0, 0,                      // unused
-                true))                        // require ack
+                false))                        // require ack
             {
                 current_turn = turn;
                 return true;

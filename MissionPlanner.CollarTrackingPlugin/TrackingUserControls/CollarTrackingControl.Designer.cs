@@ -32,6 +32,10 @@
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 20D);
             this.CollarTrackingControlPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.LNAGainTextBox = new System.Windows.Forms.RichTextBox();
+            this.LNAGainButton = new System.Windows.Forms.Button();
+            this.MixerGainTextBox = new System.Windows.Forms.RichTextBox();
+            this.MixerGainButton = new System.Windows.Forms.Button();
             this.CollarTrackingControlGroupBox = new System.Windows.Forms.GroupBox();
             this.CollarTrackingControlGroupBoxPanel = new System.Windows.Forms.TableLayoutPanel();
             this.CollarFrequencyStaticLabel = new System.Windows.Forms.Label();
@@ -47,10 +51,6 @@
             this.CollarScanProgressBar = new System.Windows.Forms.ProgressBar();
             this.IFGainButton = new System.Windows.Forms.Button();
             this.IFGainTextBox = new System.Windows.Forms.RichTextBox();
-            this.MixerGainButton = new System.Windows.Forms.Button();
-            this.MixerGainTextBox = new System.Windows.Forms.RichTextBox();
-            this.LNAGainButton = new System.Windows.Forms.Button();
-            this.LNAGainTextBox = new System.Windows.Forms.RichTextBox();
             this.CollarTrackingControlPanel.SuspendLayout();
             this.CollarTrackingControlGroupBox.SuspendLayout();
             this.CollarTrackingControlGroupBoxPanel.SuspendLayout();
@@ -117,6 +117,54 @@
             this.CollarTrackingControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.CollarTrackingControlPanel.Size = new System.Drawing.Size(597, 333);
             this.CollarTrackingControlPanel.TabIndex = 0;
+            // 
+            // LNAGainTextBox
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.LNAGainTextBox, 2);
+            this.LNAGainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LNAGainTextBox.Location = new System.Drawing.Point(467, 3);
+            this.LNAGainTextBox.Name = "LNAGainTextBox";
+            this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainTextBox, 3);
+            this.LNAGainTextBox.Size = new System.Drawing.Size(52, 42);
+            this.LNAGainTextBox.TabIndex = 10;
+            this.LNAGainTextBox.Text = "8";
+            // 
+            // LNAGainButton
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.LNAGainButton, 2);
+            this.LNAGainButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LNAGainButton.Location = new System.Drawing.Point(409, 3);
+            this.LNAGainButton.Name = "LNAGainButton";
+            this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainButton, 3);
+            this.LNAGainButton.Size = new System.Drawing.Size(52, 42);
+            this.LNAGainButton.TabIndex = 9;
+            this.LNAGainButton.Text = "LNA";
+            this.LNAGainButton.UseVisualStyleBackColor = true;
+            this.LNAGainButton.Click += new System.EventHandler(this.LNAGainButton_Click);
+            // 
+            // MixerGainTextBox
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.MixerGainTextBox, 2);
+            this.MixerGainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MixerGainTextBox.Location = new System.Drawing.Point(351, 3);
+            this.MixerGainTextBox.Name = "MixerGainTextBox";
+            this.CollarTrackingControlPanel.SetRowSpan(this.MixerGainTextBox, 3);
+            this.MixerGainTextBox.Size = new System.Drawing.Size(52, 42);
+            this.MixerGainTextBox.TabIndex = 8;
+            this.MixerGainTextBox.Text = "8";
+            // 
+            // MixerGainButton
+            // 
+            this.CollarTrackingControlPanel.SetColumnSpan(this.MixerGainButton, 2);
+            this.MixerGainButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MixerGainButton.Location = new System.Drawing.Point(293, 3);
+            this.MixerGainButton.Name = "MixerGainButton";
+            this.CollarTrackingControlPanel.SetRowSpan(this.MixerGainButton, 3);
+            this.MixerGainButton.Size = new System.Drawing.Size(52, 42);
+            this.MixerGainButton.TabIndex = 7;
+            this.MixerGainButton.Text = "MIX";
+            this.MixerGainButton.UseVisualStyleBackColor = true;
+            this.MixerGainButton.Click += new System.EventHandler(this.MixerGainButton_Click);
             // 
             // CollarTrackingControlGroupBox
             // 
@@ -303,8 +351,8 @@
             this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingPolarChart, 16);
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
+            series1.CustomProperties = "AreaDrawingStyle=Polygon, PolarDrawingStyle=Marker";
             series1.IsVisibleInLegend = false;
-            series1.IsXValueIndexed = true;
             series1.Name = "Series1";
             series1.Points.Add(dataPoint1);
             this.CollarTrackingPolarChart.Series.Add(series1);
@@ -359,54 +407,6 @@
             this.IFGainTextBox.Size = new System.Drawing.Size(52, 42);
             this.IFGainTextBox.TabIndex = 6;
             this.IFGainTextBox.Text = "15";
-            // 
-            // MixerGainButton
-            // 
-            this.CollarTrackingControlPanel.SetColumnSpan(this.MixerGainButton, 2);
-            this.MixerGainButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MixerGainButton.Location = new System.Drawing.Point(293, 3);
-            this.MixerGainButton.Name = "MixerGainButton";
-            this.CollarTrackingControlPanel.SetRowSpan(this.MixerGainButton, 3);
-            this.MixerGainButton.Size = new System.Drawing.Size(52, 42);
-            this.MixerGainButton.TabIndex = 7;
-            this.MixerGainButton.Text = "MIX";
-            this.MixerGainButton.UseVisualStyleBackColor = true;
-            this.MixerGainButton.Click += new System.EventHandler(this.MixerGainButton_Click);
-            // 
-            // MixerGainTextBox
-            // 
-            this.CollarTrackingControlPanel.SetColumnSpan(this.MixerGainTextBox, 2);
-            this.MixerGainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MixerGainTextBox.Location = new System.Drawing.Point(351, 3);
-            this.MixerGainTextBox.Name = "MixerGainTextBox";
-            this.CollarTrackingControlPanel.SetRowSpan(this.MixerGainTextBox, 3);
-            this.MixerGainTextBox.Size = new System.Drawing.Size(52, 42);
-            this.MixerGainTextBox.TabIndex = 8;
-            this.MixerGainTextBox.Text = "8";
-            // 
-            // LNAGainButton
-            // 
-            this.CollarTrackingControlPanel.SetColumnSpan(this.LNAGainButton, 2);
-            this.LNAGainButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LNAGainButton.Location = new System.Drawing.Point(409, 3);
-            this.LNAGainButton.Name = "LNAGainButton";
-            this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainButton, 3);
-            this.LNAGainButton.Size = new System.Drawing.Size(52, 42);
-            this.LNAGainButton.TabIndex = 9;
-            this.LNAGainButton.Text = "LNA";
-            this.LNAGainButton.UseVisualStyleBackColor = true;
-            this.LNAGainButton.Click += new System.EventHandler(this.LNAGainButton_Click);
-            // 
-            // LNAGainTextBox
-            // 
-            this.CollarTrackingControlPanel.SetColumnSpan(this.LNAGainTextBox, 2);
-            this.LNAGainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LNAGainTextBox.Location = new System.Drawing.Point(467, 3);
-            this.LNAGainTextBox.Name = "LNAGainTextBox";
-            this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainTextBox, 3);
-            this.LNAGainTextBox.Size = new System.Drawing.Size(52, 42);
-            this.LNAGainTextBox.TabIndex = 10;
-            this.LNAGainTextBox.Text = "8";
             // 
             // CollarTrackingControl
             // 

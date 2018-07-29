@@ -50,8 +50,17 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
         {
             //Read radiation pattern file. File should be in increments
             //of 1 from 0 to 359
-            System.IO.StreamReader reader = new System.IO.StreamReader(AntennaPatternFile);
-            Dictionary<int, float> rad_pattern = new Dictionary<int, float>();
+            System.IO.StreamReader reader;
+            try
+            {
+                reader = new System.IO.StreamReader(AntennaPatternFile);
+            }
+            catch
+            {
+                return false;
+            }
+
+            SortedDictionary<int, float> rad_pattern = new SortedDictionary<int, float>();
             string line;
             int i = 0;
             while((line = reader.ReadLine()) != null)
@@ -69,9 +78,11 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
                 }
             }
 
+            rad_pattern = LinearInterpolate(rad_pattern); //Want a value for every degree. Linear for now
+
             //Two lists are created to contained data lined up by direction
             //received. The allows for cross correlation to be taken.
-            Dictionary<int, int> directions = new Dictionary<int, int>();
+            SortedDictionary<int, int> directions = new SortedDictionary<int, int>();
             List<float> rad_pattern_points = new List<float>();
             List<float> retrieved_points = new List<float>();
 
@@ -162,6 +173,37 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
 
             Confidence = (float)max_r;
             DegreesFromNorth = max_d;
+        }
+
+        /// <summary>
+        /// Linear interpolate the rad pattern so that
+        /// there is a point for every direction. Probably
+        /// will want totry a different interpolation method (cosine?).
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private static SortedDictionary<int, float> LinearInterpolate(SortedDictionary<int, float> data)
+        {
+            int i;
+            SortedDictionary<int, float> interpolated_data = data;
+
+            for(i = 0; i < data.Count - 1; i++)
+            {
+                int j;
+                int x1 = data.ElementAt(i).Key;
+                int x2 = data.ElementAt(i + 1).Key;
+                int deltax = x2 - x1;
+                float y1 = data.ElementAt(i).Value;
+                float y2 = data.ElementAt(i + 1).Value;
+                float m = (y2 - y1) / (deltax);
+
+                for(j = x1 + 1; j < x2; j++)
+                {
+                    interpolated_data.Add(j, j*m + y1);
+                }
+            }
+
+            return interpolated_data;
         }
     }
 }

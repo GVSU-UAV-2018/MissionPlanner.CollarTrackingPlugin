@@ -168,9 +168,15 @@ namespace MissionPlanner.CollarTrackingPlugin
 
             //Complete
             if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn() 
-                == (MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns() - 1))
+                >= (MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns() - 1))
             {
                 this.CollarScanProgressBar.Value = 100;
+                UnlockButtons(true);
+                LogScan(true);
+                MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived -= RDFData_Received;
+                CollarTrackingTimeoutTimer.Enabled = false;
+                CollarTrackingConnectionLabel.Text = "";
+                CollarTrackingConnectionLabel.BackColor = Color.Black;
 
                 RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis();
                 CollarTrackingScanInfoLabel.Text = "D: " +
@@ -178,12 +184,6 @@ namespace MissionPlanner.CollarTrackingPlugin
                     "° from N | C: " +
                     (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") + 
                     "%";
-                UnlockButtons(true);
-                LogScan(true);
-                MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived -= RDFData_Received;
-                CollarTrackingTimeoutTimer.Enabled = false;
-                CollarTrackingConnectionLabel.Text = "";
-                CollarTrackingConnectionLabel.BackColor = Color.Black;
             }
             else
             {
