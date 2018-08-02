@@ -62,13 +62,16 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         //Timeout global variable
         static bool command_timeout = false;
 
+        static byte scan_completion_status = (byte)MAVLink.MAV_RESULT.UNSUPPORTED;
+
+        static byte scan_sequence = 1;
+
         //State variables that report if Pi succesfully changed param values
+        private static bool vhf_snr_state_changed = false;
         private static bool vhf_freq_state_changed = false;
         private static bool if_gain_state_changed = false;
         private static bool mixer_gain_state_changed = false;
         private static bool lna_gain_state_changed = false;
-
-        private static uint prev_msg_id;
 
         /// <summary>
         /// Constructor
@@ -189,6 +192,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
             MavLinkCom.sendPacket(setFreq, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
 
+            CommandTimeoutTimer.Interval = 1000;
             CommandTimeoutTimer.Enabled = true;
             while (!vhf_freq_state_changed &&
                 !command_timeout);
@@ -229,6 +233,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
             MavLinkCom.sendPacket(setIFGain, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
 
+            CommandTimeoutTimer.Interval = 1000;
             CommandTimeoutTimer.Enabled = true;
             while (!if_gain_state_changed &&
                 !command_timeout) ;
@@ -270,6 +275,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
             MavLinkCom.sendPacket(setMixerGain, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
 
+            CommandTimeoutTimer.Interval = 1000;
             CommandTimeoutTimer.Enabled = true;
             while (!mixer_gain_state_changed &&
                 !command_timeout) ;
@@ -311,9 +317,10 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
             MavLinkCom.sendPacket(setLNAGain, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
 
+            CommandTimeoutTimer.Interval = 1000;
             CommandTimeoutTimer.Enabled = true;
             while (!lna_gain_state_changed &&
-                !command_timeout) ;
+                !command_timeout);
 
             bool retVal;
 
@@ -330,14 +337,26 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         }
 
         /// <summary>
-        /// Sends a param_value to pi as an acknowledgement.
+        /// Tell the Pi to begin a scan.
         /// </summary>
-        /// <param name="value"></param>
-        private static void SendVHF_SNRPiAcknowledge(float value)
+        public static void DoMavLinkSNRScan(bool new_scan)
         {
-            MAVLink.mavlink_param_value_t ack = new MAVLink.mavlink_param_value_t();
-            //Struct for sending collar frequency to RDF system
-            //This should be good to go based on prev groups design
+            if(new_scan)
+                scan_sequence = (byte)(((int)scan_sequence + 1) % 256);
+
+            //Setting ack to false. Ok in this scenario because we don't move on
+            //until MAV_IN_PROGRESS is MAV_SUCCESS
+            MavLinkCom.doCommand((byte)system_id, (byte)comp_id, MAVLink.MAV_CMD.USER_1,
+                scan_sequence, 0, 0, 0, 0, 0, 0, false);
+        }
+
+        /// <summary>
+        /// Request the value of a data scan from the Pi.
+        /// </summary>
+        /// <returns></returns>
+        public static void ReadMavLinkSNR()
+        {
+            //Setting IF Gain ID
             byte[] paramid = new byte[16];
             paramid[0] = (byte)'V';
             paramid[1] = (byte)'H';
@@ -348,18 +367,32 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             paramid[6] = (byte)'R';
             paramid[7] = (byte)'\0';
 
-            ack.param_id = paramid;
-            ack.param_value = value;
-            MavLinkCom.sendPacket(ack, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
+            MAVLink.mavlink_param_request_read_t getSNR = new MAVLink.mavlink_param_request_read_t();
+            getSNR.target_system = (byte)system_id; //Drone
+            getSNR.target_component = (byte)comp_id; //Pi
+            getSNR.param_index = (byte)4;
+            getSNR.param_id = paramid;
+
+            MavLinkCom.sendPacket(getSNR, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
         }
 
         /// <summary>
-        /// Send signal to drone to perform RDF scan.
+        /// Poll the Pi to determine if the scan has completed.
+        /// Poll the Pi SNR value until a value is received.
         /// </summary>
-        public static void SendMavLinkCmdLongUser_1()
+        /// <returns></returns>
+        public static bool GetScanStatus()
         {
-            //TO DO: Check that drone is loitering first before RDF scan
-            MavLinkCom.doCommand(system_id, (byte)comp_id, MAVLink.MAV_CMD.USER_1, 0, 0, 0, 0, 0, 0, 0, false);
+            if (scan_completion_status == (byte)MAVLink.MAV_RESULT.ACCEPTED)
+            {
+                ReadMavLinkSNR();
+                return true;
+            }
+            else
+            {
+                DoMavLinkSNRScan(false);
+                return false;
+            }
         }
 
         /// <summary>
@@ -372,51 +405,34 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         {
             if (msg.sysid == system_id && msg.compid == comp_id) //Get Pi messages
             {
-                if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.MEMORY_VECT)
+                if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.COMMAND_ACK)
                 {
-                    MAVLink.mavlink_memory_vect_t mem_vect_msg = (MAVLink.mavlink_memory_vect_t)msg.data;
-                    byte[] mem_vect_data = mem_vect_msg.value;
-                    ushort mem_vect_addr = mem_vect_msg.address;
-
-                    float SNR = 0;
-                    uint msg_id;
-                    int direction = 0;
-
-                    if (System.BitConverter.IsLittleEndian)
-                    {
-                        //First four bytes are float
-                        //Only swap first four
-                        byte temp = mem_vect_data[0];
-                        mem_vect_data[0] = mem_vect_data[3];
-                        mem_vect_data[3] = temp;
-                        temp = mem_vect_data[1];
-                        mem_vect_data[1] = mem_vect_data[2];
-                        mem_vect_data[2] = temp;
-                    }
-
-                    SNR = System.BitConverter.ToSingle(mem_vect_data, 0);
-                    msg_id = mem_vect_addr;
-
-                    SendVHF_SNRPiAcknowledge(SNR);
-                    direction = (int)(Math.Round(MavLinkCom.MAV.cs.yaw / 5.0) * 5); //current state of drone
-
-                    //We do not want double SNR data recorded
-                    if (prev_msg_id != msg_id)
-                    {
-                        prev_msg_id = msg_id;
-                        RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
-                        RDFDataReceived(new object(), new EventArgs());
-                    }
-
-                    prev_msg_id = msg_id;
+                    MAVLink.mavlink_command_ack_t cmd_ack_msg = (MAVLink.mavlink_command_ack_t)msg.data;
+                    scan_completion_status = cmd_ack_msg.result;
                 }
-                else if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_VALUE)
+                if(msg.msgid == (int)MAVLink.MAVLINK_MSG_ID.PARAM_VALUE)
                 {
                     MAVLink.mavlink_param_value_t param_value_msg = (MAVLink.mavlink_param_value_t)msg.data;
-   
                     string param_id = System.Text.Encoding.Default.GetString(param_value_msg.param_id).Trim().ToUpper();
-                    if (param_id[0] == 'V' && param_id[1] == 'H' 
-                        && param_id[2] == 'F')
+
+                    if (param_id[0] == 'V' && param_id[1] == 'H'
+                        && param_id[2] == 'F' && param_id[3] == '_'
+                        && param_id[4] == 'S' && param_id[5] == 'N'
+                        && param_id[6] == 'R')
+                    {
+                        float SNR = param_value_msg.param_value;
+                        int direction = (int)(Math.Round(MavLinkCom.MAV.cs.yaw / 5.0) * 5);
+                        RDFData.Add(new KeyValuePair<int, float>(direction, SNR));
+                        RDFDataReceived(new object(), new EventArgs());
+                        //Set to unsupported so that a retrigger of a new packet 
+                        //does not happen. 
+                        scan_completion_status = (byte)MAVLink.MAV_RESULT.UNSUPPORTED;
+                        vhf_snr_state_changed = true;
+                    }
+                    else if (param_id[0] == 'V' && param_id[1] == 'H' 
+                        && param_id[2] == 'F' && param_id[3] == '_'
+                        && param_id[4] == 'F' && param_id[5] == 'R'
+                        && param_id[6] == 'E' && param_id[7] == 'Q')
                     {
                         vhf_freq_state_changed = true;
                     }

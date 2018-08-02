@@ -92,6 +92,12 @@
     <Compile Include="TrackingUserControls\CollarTrackingControl.Designer.cs">
       <DependentUpon>CollarTrackingControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TrackingUserControls\PolarChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TrackingUserControls\PolarChartControl.Designer.cs">
+      <DependentUpon>PolarChartControl.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -107,6 +113,9 @@
     </Compile>
     <EmbeddedResource Include="TrackingUserControls\CollarTrackingControl.resx">
       <DependentUpon>CollarTrackingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrackingUserControls\PolarChartControl.resx">
+      <DependentUpon>PolarChartControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

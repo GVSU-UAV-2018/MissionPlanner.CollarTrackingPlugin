@@ -24,11 +24,11 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// Gets/Sets the desired collar frequency
         /// to search for.
         /// </summary>
-        [Description("The selected collar frequency to be scanned."),Category("Data")] 
+        [Description("The selected collar frequency to be scanned."), Category("Data")]
         public float SelectedCollarFrequency
         { get; set; }
         #endregion
- 
+        int i = 0;
         #region Globals
         /// <summary>
         /// Instance for logging data
@@ -39,7 +39,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <summary>
         /// Timer for timeout during a RDF scan.
         /// </summary>
-        System.Timers.Timer CollarTrackingTimeoutTimer = new System.Timers.Timer(12000);
+        System.Timers.Timer CollarTrackingTimeoutTimer = new System.Timers.Timer(250);
 
         //Default logging location
         string LOG_LOCATION = @"C:\UAV\Log";
@@ -104,18 +104,18 @@ namespace MissionPlanner.CollarTrackingPlugin
             if (SelectedCollarFrequency == 0 && VerifyFrequency())
                 return;
 
-            CollarTrackingScanInfoLabel.Text = "Scan Status:";
+            CollarTrackingScanInfoLabel.Text = "Scan Status: ";
             UnlockButtons(false);
             //Clear all data contents before re-using
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Clear();
-            CollarTrackingPolarChart.Series[0].Points.Clear();
+            polarChartControl1.Clear();
             CollarTrackingConnectionLabel.Text = "";
             CollarTrackingConnectionLabel.BackColor = Color.Black;
             CollarScanProgressBar.Value = 0;
 
             MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived += RDFData_Received;
             MavLinkRDFCommunication.MavLinkRDFCommunication.ResetFlight(); //Reset flight assuming it remains at altitude
-            MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1(); //Kick off the scanning
+            MavLinkRDFCommunication.MavLinkRDFCommunication.DoMavLinkSNRScan(true); //Kick off the scanning
             CollarTrackingTimeoutTimer.Enabled = true;
             CollarTrackingTimeoutTimer.Start();
             log = new Logging.Logging(LOG_LOCATION);
@@ -146,8 +146,11 @@ namespace MissionPlanner.CollarTrackingPlugin
         /// <param name="e"></param>
         private void RDFData_Received(object sender, EventArgs e)
         {
-            CollarTrackingConnectionLabel.Text = "Receiving Pi data";
+            CollarTrackingTimeoutTimer.Enabled = false;
+            CollarTrackingConnectionLabel.Text = "Obtained Pi data";
             CollarTrackingConnectionLabel.BackColor = Color.Green;
+            CollarTrackingScanInfoLabel.Text = "Scan Status: " + (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn() + 1) + " out of " +
+                MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns() + " turns";
 
             //Whatever the numberof values is divided by the number of intervals to perform
             this.CollarScanProgressBar.Value = (int)(((double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn() / (double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns()) * 100);
@@ -155,50 +158,50 @@ namespace MissionPlanner.CollarTrackingPlugin
             //rinse and repeat
             //0 index for series because only one series is used
             //for our needs
-            CollarTrackingPolarChart.Series[0].Points.Clear();
-            float min = 100000;
-            foreach(KeyValuePair<int, float> kvp in MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData)
-            {
-                CollarTrackingPolarChart.Series[0].Points.AddXY(kvp.Key, kvp.Value);
-                if (kvp.Value < min)
-                    min = kvp.Value;
-            }
+            KeyValuePair<int, float> kvp = MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData[MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Count - 1];
+            polarChartControl1.AddPoint(kvp.Key, kvp.Value);
             log.AddData();
-            CollarTrackingPolarChart.ChartAreas[0].AxisY.Minimum = (int)(min - 1);
 
             //Complete
-            if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn() 
-                >= (MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns() - 1))
+            if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn()
+                == (MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns() - 1))
             {
                 this.CollarScanProgressBar.Value = 100;
+
+                if (RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis())
+                {
+                    CollarTrackingScanInfoLabel.Text = "D: " +
+                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
+                        "° from N | C: " +
+                        (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") +
+                        "%";
+                }
+                else
+                {
+                    MessageBox.Show("Pattern match failed. The direction and confidence cannot be calculated. "
+                        + "Is the pattern file open?");
+                }
                 UnlockButtons(true);
                 LogScan(true);
                 MavLinkRDFCommunication.MavLinkRDFCommunication.RDFDataReceived -= RDFData_Received;
                 CollarTrackingTimeoutTimer.Enabled = false;
                 CollarTrackingConnectionLabel.Text = "";
                 CollarTrackingConnectionLabel.BackColor = Color.Black;
-
-                RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis();
-                CollarTrackingScanInfoLabel.Text = "D: " +
-                RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
-                    "° from N | C: " +
-                    (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") + 
-                    "%";
             }
             else
             {
                 //The next WP should be YAW
                 MavLinkRDFCommunication.MavLinkRDFCommunication.GoToNextTurn();
-                MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
-                CollarTrackingTimeoutTimer.Enabled = false;
+                MavLinkRDFCommunication.MavLinkRDFCommunication.DoMavLinkSNRScan(true);
+
                 CollarTrackingTimeoutTimer.Enabled = true;
                 CollarTrackingTimeoutTimer.Start();
             }
         }
 
         /// <summary>
-        /// Event Handler: Skips waiting for the current data if
-        /// the desired interval is reached.
+        /// Event Handler: Waits for Pi SNR to
+        /// be received.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -206,10 +209,9 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             //Resend frequency since Pi probably restarted
             //Try to do scan in direction again
-            CollarTrackingConnectionLabel.Text = "No data rcvd. Retrying...";
-            CollarTrackingConnectionLabel.BackColor = Color.Red;
-            MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkFrequency(SelectedCollarFrequency);
-            MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkCmdLongUser_1();
+            CollarTrackingConnectionLabel.Text = "Waiting on Pi...";
+            CollarTrackingConnectionLabel.BackColor = Color.Yellow;
+            MavLinkRDFCommunication.MavLinkRDFCommunication.GetScanStatus();
         }
 
         /// <summary>
@@ -231,7 +233,7 @@ namespace MissionPlanner.CollarTrackingPlugin
                 }
 
             }
-            catch(FormatException ex1)
+            catch (FormatException ex1)
             {
                 MessageBox.Show("IF Gain not valid");
             }
@@ -333,24 +335,13 @@ namespace MissionPlanner.CollarTrackingPlugin
                 }
                 catch (FileNotFoundException fex)
                 {
-                    MessageBox.Show("Collar Tracking Control received exception: " + fex.Message);
+                    //MessageBox.Show("Collar Tracking Control received exception: " + fex.Message);
                     return;
                 }
 
                 while ((line = file.ReadLine()) != null)
                 {
-                    if (line.ToUpper().Contains("SCAN_TIMEOUT="))
-                    {
-                        try
-                        {
-                            CollarTrackingTimeoutTimer.Interval = Convert.ToInt32(line.Replace("SCAN_TIMEOUT=", "")) * 1000;
-                        }
-                        catch (FormatException fex)
-                        {
-
-                        }
-                    }
-                    else if (line.ToUpper().Contains("COMP_ID="))
+                    if (line.ToUpper().Contains("COMP_ID="))
                     {
                         try
                         {
@@ -416,6 +407,9 @@ namespace MissionPlanner.CollarTrackingPlugin
 
             File.AppendAllText(LOG_LOCATION + @"\" + FILE_NAME, appendedLine);
         }
+        #endregion
+
+        #region Debug
         #endregion
     }
 }
