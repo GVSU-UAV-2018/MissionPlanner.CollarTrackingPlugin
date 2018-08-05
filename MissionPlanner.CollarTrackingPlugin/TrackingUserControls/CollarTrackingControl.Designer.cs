@@ -124,7 +124,7 @@
             this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainTextBox, 3);
             this.LNAGainTextBox.Size = new System.Drawing.Size(52, 42);
             this.LNAGainTextBox.TabIndex = 10;
-            this.LNAGainTextBox.Text = "15";
+            this.LNAGainTextBox.Text = "9";
             // 
             // LNAGainButton
             // 
@@ -148,7 +148,7 @@
             this.CollarTrackingControlPanel.SetRowSpan(this.MixerGainTextBox, 3);
             this.MixerGainTextBox.Size = new System.Drawing.Size(52, 42);
             this.MixerGainTextBox.TabIndex = 8;
-            this.MixerGainTextBox.Text = "8";
+            this.MixerGainTextBox.Text = "1";
             // 
             // MixerGainButton
             // 
@@ -381,16 +381,17 @@
             this.CollarTrackingControlPanel.SetRowSpan(this.IFGainTextBox, 3);
             this.IFGainTextBox.Size = new System.Drawing.Size(52, 42);
             this.IFGainTextBox.TabIndex = 6;
-            this.IFGainTextBox.Text = "8";
+            this.IFGainTextBox.Text = "1";
             // 
             // polarChartControl1
             // 
             this.CollarTrackingControlPanel.SetColumnSpan(this.polarChartControl1, 14);
             this.polarChartControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.polarChartControl1.Location = new System.Drawing.Point(177, 51);
+            this.polarChartControl1.Location = new System.Drawing.Point(174, 48);
+            this.polarChartControl1.Margin = new System.Windows.Forms.Padding(0);
             this.polarChartControl1.Name = "polarChartControl1";
             this.CollarTrackingControlPanel.SetRowSpan(this.polarChartControl1, 16);
-            this.polarChartControl1.Size = new System.Drawing.Size(417, 250);
+            this.polarChartControl1.Size = new System.Drawing.Size(423, 256);
             this.polarChartControl1.TabIndex = 11;
             // 
             // CollarTrackingControl

@@ -16,7 +16,7 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
         private int size_y = 0;
 
         private float scale_min_y = 0.0F;
-        private float scale_max_y = 1000.0F;
+        private float scale_max_y = 0.0F;
 
 
 
@@ -164,13 +164,13 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
             graphics.DrawString("330", this.Font, brush, size_x / 4.0F + 7, (size_y / 2.0F) - (0.866F * (size_y / 2.0F)) - 3);
 
             //Draw Max Scale
-            graphics.DrawString(((double)scale_max_y).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, 2);
+            graphics.DrawString(((double)scale_max_y).ToString(), this.Font, brush, size_x / 2.0F + 2, 2);
             //Draw 2nd Scale
-            graphics.DrawString(((double)(scale_max_y - ((scale_max_y - scale_min_y) / 3))).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, size_y / 6.0F + 2);
+            graphics.DrawString(((double)(scale_max_y - ((scale_max_y - scale_min_y) / 3))).ToString(), this.Font, brush, size_x / 2.0F + 2, size_y / 6.0F + 2);
             //Draw 3rd Scale
-            graphics.DrawString(((double)(scale_min_y + ((scale_max_y - scale_min_y) / 3))).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, 2 * size_y / 6.0F + 2);
+            graphics.DrawString(((double)(scale_min_y + ((scale_max_y - scale_min_y) / 3))).ToString(), this.Font, brush, size_x / 2.0F + 2, 2 * size_y / 6.0F + 2);
             //Draw Min Scale
-            graphics.DrawString(((double)scale_min_y).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, size_y / 2.0F - 12);
+            graphics.DrawString(((double)scale_min_y).ToString(), this.Font, brush, size_x / 2.0F + 2, size_y / 2.0F - 12);
         }
 
         private void ClearGraph()
@@ -192,7 +192,7 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
         private void ResetGraph()
         {
             scale_min_y = 0.0F;
-            scale_max_y = 1000.0F;
+            scale_max_y = 0.0F;
             ClearGraph();
             DrawEmptyChart();
         }

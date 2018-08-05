@@ -169,12 +169,12 @@ namespace MissionPlanner.CollarTrackingPlugin
             {
                 this.CollarScanProgressBar.Value = 100;
 
-                if (RadiationPatternMatching.VectorAveraging.CalculateResult(MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData))
+                if (RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis())
                 {
                     CollarTrackingScanInfoLabel.Text = "D: " +
-                    RadiationPatternMatching.VectorAveraging.direction +
+                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
                         "° from N | RSSI: " +
-                        (RadiationPatternMatching.VectorAveraging.magnitude).ToString("0.0") +
+                        (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") +
                         "%";
                 }
                 else
