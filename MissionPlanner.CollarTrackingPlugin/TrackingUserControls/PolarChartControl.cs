@@ -15,8 +15,8 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
         private int size_x = 0;
         private int size_y = 0;
 
-        private long scale_min_y = 0;
-        private long scale_max_y = 1000;
+        private float scale_min_y = 0.0F;
+        private float scale_max_y = 1000.0F;
 
 
 
@@ -60,8 +60,8 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
 
         private void DrawPoint(int x, float y)
         {
-            Pen pen = new Pen(Color.LightBlue, 1);
-            Brush brush = new SolidBrush(Color.LightBlue);
+            Pen pen = new Pen(Color.Red, 1);
+            Brush brush = new SolidBrush(Color.Red);
             int point_size = 4;
             size_x = this.Size.Width - 20;
             size_y = this.Size.Height - 2;
@@ -114,8 +114,8 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
 
         private void DrawEmptyChart()
         {
-            Pen pen = new Pen(Color.Green, 1);
-            Brush brush = new SolidBrush(Color.Green);
+            Pen pen = new Pen(Color.LightBlue, 1);
+            Brush brush = new SolidBrush(Color.LightBlue);
             size_x = this.Size.Width - 20;
             size_y = this.Size.Height - 2;
 
@@ -164,13 +164,13 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
             graphics.DrawString("330", this.Font, brush, size_x / 4.0F + 7, (size_y / 2.0F) - (0.866F * (size_y / 2.0F)) - 3);
 
             //Draw Max Scale
-            graphics.DrawString(scale_max_y.ToString(), this.Font, brush, size_x / 2.0F + 2, 2);
+            graphics.DrawString(((double)scale_max_y).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, 2);
             //Draw 2nd Scale
-            graphics.DrawString((scale_max_y - ((scale_max_y - scale_min_y) / 3)).ToString(), this.Font, brush, size_x / 2.0F + 2, size_y / 6.0F + 2);
+            graphics.DrawString(((double)(scale_max_y - ((scale_max_y - scale_min_y) / 3))).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, size_y / 6.0F + 2);
             //Draw 3rd Scale
-            graphics.DrawString((scale_min_y + ((scale_max_y - scale_min_y) / 3)).ToString(), this.Font, brush, size_x / 2.0F + 2, 2 * size_y / 6.0F + 2);
+            graphics.DrawString(((double)(scale_min_y + ((scale_max_y - scale_min_y) / 3))).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, 2 * size_y / 6.0F + 2);
             //Draw Min Scale
-            graphics.DrawString(scale_min_y.ToString(), this.Font, brush, size_x / 2.0F + 2, size_y / 2.0F - 12);
+            graphics.DrawString(((double)scale_min_y).ToString("0.##"), this.Font, brush, size_x / 2.0F + 2, size_y / 2.0F - 12);
         }
 
         private void ClearGraph()
@@ -191,13 +191,13 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
 
         private void ResetGraph()
         {
-            scale_min_y = 0;
-            scale_max_y = 1000;
+            scale_min_y = 0.0F;
+            scale_max_y = 1000.0F;
             ClearGraph();
             DrawEmptyChart();
         }
 
-        private void SetScale()
+        /*private void SetScale()
         {
             long min = 99999999999999999;
             long max = -99999999999999999;
@@ -211,7 +211,7 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
 
             scale_max_y = max + 1;
             scale_min_y = min - 1;
-        }
+        }*/
 
         private void PolarChartControl_Resize(object sender, EventArgs e)
         {

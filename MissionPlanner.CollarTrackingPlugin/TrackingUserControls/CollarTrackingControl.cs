@@ -155,12 +155,13 @@ namespace MissionPlanner.CollarTrackingPlugin
             //Whatever the numberof values is divided by the number of intervals to perform
             this.CollarScanProgressBar.Value = (int)(((double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn() / (double)MavLinkRDFCommunication.MavLinkRDFCommunication.GetNumberOfTurns()) * 100);
 
+
+            log.AddData();
             //rinse and repeat
             //0 index for series because only one series is used
             //for our needs
             KeyValuePair<int, float> kvp = MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData[MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Count - 1];
             polarChartControl1.AddPoint(kvp.Key, kvp.Value);
-            log.AddData();
 
             //Complete
             if (MavLinkRDFCommunication.MavLinkRDFCommunication.GetCurrentTurn()
@@ -168,18 +169,17 @@ namespace MissionPlanner.CollarTrackingPlugin
             {
                 this.CollarScanProgressBar.Value = 100;
 
-                if (RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis())
+                if (RadiationPatternMatching.VectorAveraging.CalculateResult(MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData))
                 {
                     CollarTrackingScanInfoLabel.Text = "D: " +
-                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
-                        "° from N | C: " +
-                        (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") +
+                    RadiationPatternMatching.VectorAveraging.direction +
+                        "° from N | RSSI: " +
+                        (RadiationPatternMatching.VectorAveraging.magnitude).ToString("0.0") +
                         "%";
                 }
                 else
                 {
-                    MessageBox.Show("Pattern match failed. The direction and confidence cannot be calculated. "
-                        + "Is the pattern file open?");
+
                 }
                 UnlockButtons(true);
                 LogScan(true);

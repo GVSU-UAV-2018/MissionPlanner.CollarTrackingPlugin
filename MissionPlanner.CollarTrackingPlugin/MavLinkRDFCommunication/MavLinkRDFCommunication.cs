@@ -73,6 +73,11 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         private static bool mixer_gain_state_changed = false;
         private static bool lna_gain_state_changed = false;
 
+        private static float vhf_freq = 0.0F;
+        private static int if_gain = 0;
+        private static int mixer_gain = 0;
+        private static int lna_gain = 0;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -170,6 +175,8 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
         /// <returns></returns>
         public static bool SendMavLinkFrequency(float frequency)
         {
+            vhf_freq = frequency;
+
             //Struct for sending collar frequency to RDF system
             //Has to be exactly 16 bytes
             byte[] paramid = new byte[16];
@@ -187,7 +194,7 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
             setFreq.target_system = (byte)system_id; //Drone
             setFreq.target_component = (byte)comp_id; //Pi
             setFreq.param_id = paramid;
-            setFreq.param_value = frequency;
+            setFreq.param_value = frequency * 1000000;
             setFreq.param_type = (byte)MAVLink.MAV_PARAM_TYPE.REAL32;
 
             MavLinkCom.sendPacket(setFreq, MavLinkCom.sysidcurrent, MavLinkCom.compidcurrent);
@@ -213,6 +220,8 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
         public static bool SendMavLinkIFGain(int gain)
         {
+            if_gain = gain;
+
             //Setting IF Gain ID
             byte[] paramid = new byte[16];
             paramid[0] = (byte)'I';
@@ -254,7 +263,9 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
         public static bool SendMavLinkMixerGain(int gain)
         {
-            //Setting IF Gain ID
+            mixer_gain = gain;
+
+            //Setting mixer Gain ID
             byte[] paramid = new byte[16];
             paramid[0] = (byte)'M';
             paramid[1] = (byte)'I';
@@ -296,7 +307,9 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
 
         public static bool SendMavLinkLNAGain(int gain)
         {
-            //Setting IF Gain ID
+            lna_gain = gain;
+
+            //Setting LNA Gain ID
             byte[] paramid = new byte[16];
             paramid[0] = (byte)'L';
             paramid[1] = (byte)'N';
@@ -449,6 +462,17 @@ namespace MissionPlanner.CollarTrackingPlugin.MavLinkRDFCommunication
                         && param_id[2] == 'A')
                     {
                         lna_gain_state_changed = true;
+                    }
+                    else if (param_id[0] == 'V' && param_id[1] == 'H'
+                        && param_id[2] == 'F' && param_id[3] == '_'
+                        && param_id[4] == 'R' && param_id[5] == 'S'
+                        && param_id[6] == 'T' && param_id[7] == 'T')
+                    {
+                        SendMavLinkFrequency(vhf_freq);
+                        SendMavLinkIFGain(if_gain);
+                        SendMavLinkMixerGain(mixer_gain);
+                        SendMavLinkLNAGain(lna_gain);
+
                     }
                 }
             }
