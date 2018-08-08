@@ -78,7 +78,23 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
                 }
             }
 
-            rad_pattern = LinearInterpolate(rad_pattern); //Want a value for every degree. Linear for now
+            /*System.IO.StreamReader reader2 = new System.IO.StreamReader(@"C:\UAV\Log\log_862050.csv");
+            while ((line = reader2.ReadLine()) != null)
+            {
+                string[] split = line.Split(',');
+                try
+                {
+                    MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData.Add(new KeyValuePair<int, float>(Convert.ToInt32(split[0]), (float)Convert.ToDouble(split[1])));
+                }
+                catch
+                {
+                    return false;
+                }
+            }*/
+
+            
+
+            //rad_pattern = LinearInterpolate(rad_pattern); //Want a value for every degree. Linear for now
 
             //Two lists are created to contained data lined up by direction
             //received. The allows for cross correlation to be taken.
@@ -103,6 +119,7 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
             //pattern direction. Use dictornary to retrieve true direction.
             DegreesFromNorth = directions[(int)DegreesFromNorth];
 
+            System.Windows.Forms.MessageBox.Show("D: " + DegreesFromNorth + " | C: " + Confidence);
             return true;
         }
 

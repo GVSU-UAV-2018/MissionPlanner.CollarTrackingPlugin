@@ -14,13 +14,13 @@ namespace MissionPlanner.CollarTrackingPlugin.RadiationPatternMatching
 
         public static float threshold = 250.0F;
 
-        public static bool CalculateResult(List<KeyValuePair<int, float>> data)
+        public static bool CalculateResult()
         {
             float x_sum_dir = 0.0F;
             float y_sum_dir = 0.0F;
             int count = 0;
 
-            foreach(KeyValuePair<int, float> kvp in data)
+            foreach(KeyValuePair<int, float> kvp in MavLinkRDFCommunication.MavLinkRDFCommunication.RDFData)
             {
                 if (kvp.Value >= threshold)
                 {

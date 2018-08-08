@@ -28,7 +28,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         public float SelectedCollarFrequency
         { get; set; }
         #endregion
-        int i = 0;
+
         #region Globals
         /// <summary>
         /// Instance for logging data
@@ -43,6 +43,10 @@ namespace MissionPlanner.CollarTrackingPlugin
 
         //Default logging location
         string LOG_LOCATION = @"C:\UAV\Log";
+
+        //Default detection method of 0 is Radiation Pattern Matching.
+        //1 uses vector averaging
+        int direction_detection_method = 0;
         #endregion
 
         #region Constructor
@@ -169,17 +173,34 @@ namespace MissionPlanner.CollarTrackingPlugin
             {
                 this.CollarScanProgressBar.Value = 100;
 
-                if (RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis())
+                if (this.CollarTrackingDetectionMethodCombo.SelectedIndex == 0)
                 {
-                    CollarTrackingScanInfoLabel.Text = "D: " +
-                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
-                        "° from N | RSSI: " +
-                        (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") +
-                        "%";
+                    if (RadiationPatternMatching.RadiationPatternMatching.PerformPatternMatchingAnalysis())
+                    {
+                        CollarTrackingScanInfoLabel.Text = "D: " +
+                        RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth +
+                            "° from N | C: " +
+                            (RadiationPatternMatching.RadiationPatternMatching.Confidence * 100).ToString("0.0") +
+                            "%";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Radiation Pattern error! Is the file already open? Is the name/location correct?");
+                    }
                 }
-                else
+                else if (this.CollarTrackingDetectionMethodCombo.SelectedIndex == 1)
                 {
-
+                    if(RadiationPatternMatching.VectorAveraging.CalculateResult())
+                    {
+                        CollarTrackingScanInfoLabel.Text = "D: " +
+                            RadiationPatternMatching.VectorAveraging.direction +
+                            "° from N | RSSI: " +
+                            (RadiationPatternMatching.VectorAveraging.magnitude).ToString("0.0");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Vector averaging method failed.");
+                    }
                 }
                 UnlockButtons(true);
                 LogScan(true);
@@ -301,6 +322,7 @@ namespace MissionPlanner.CollarTrackingPlugin
             this.CollarTrackingSetFrequencyButton.Enabled = unlock;
             this.CollarTrackingStartScanButton.Enabled = unlock;
             this.CollarTrackingCancelScanButton.Enabled = !unlock;
+            this.CollarTrackingDetectionMethodCombo.Enabled = unlock;
         }
 
         /// <summary>
@@ -365,9 +387,31 @@ namespace MissionPlanner.CollarTrackingPlugin
 
                         }
                     }
+                    else if(line.ToUpper().Contains("DEGREE_INTERVAL="))
+                    {
+                        try
+                        {
+                            MavLinkRDFCommunication.MavLinkRDFCommunication.SetDirectionResolution(Convert.ToInt32(line.Replace("DEGREE_INTERVAL=", "")));
+                        }
+                        catch(FormatException fex)
+                        {
+
+                        }
+                    }
                     else if (line.ToUpper().Contains("LOG_DIR="))
                     {
                         LOG_LOCATION = line.Replace("LOG_DIR=", "");
+                    }
+                    else if(line.ToUpper().Contains("DIR_DETECTION_METHOD="))
+                    {
+                        try
+                        {
+                            this.CollarTrackingDetectionMethodCombo.SelectedIndex = Convert.ToInt32(line.Replace("DIR_DETECTION_METHOD=", ""));
+                        }
+                        catch (FormatException fex)
+                        {
+
+                        }
                     }
                 }
             }
@@ -388,10 +432,20 @@ namespace MissionPlanner.CollarTrackingPlugin
             string appendedLine = "";
             if (completed)
             {
-                appendedLine = CollarTrackingFrequencyTextBox.Text + ", Completed, " +
-                    RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
-                    RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +
-                    DateTime.Now.ToString() + "\n";
+                if(this.CollarTrackingDetectionMethodCombo.SelectedIndex == 0)
+                {
+                    appendedLine = CollarTrackingFrequencyTextBox.Text + ", Completed, " +
+                        RadiationPatternMatching.RadiationPatternMatching.DegreesFromNorth + "," +
+                        RadiationPatternMatching.RadiationPatternMatching.Confidence + "," +
+                        DateTime.Now.ToString() + "\n";
+                }
+                else if(this.CollarTrackingDetectionMethodCombo.SelectedIndex == 1)
+                {
+                    appendedLine = CollarTrackingFrequencyTextBox.Text + ", Completed, " +
+                        RadiationPatternMatching.VectorAveraging.direction + "," +
+                        RadiationPatternMatching.VectorAveraging.magnitude + "," +
+                        DateTime.Now.ToString() + "\n";
+                }
             }
             else
             {

@@ -44,9 +44,9 @@ namespace MissionPlanner.CollarTrackingPlugin.TrackingUserControls
             {
                 //resize scale requires a full update
                 if (y < scale_min_y)
-                    scale_min_y = (int)Math.Floor(y);
+                    scale_min_y = y;
                 else
-                    scale_max_y = (int)Math.Ceiling(y);
+                    scale_max_y = y;
 
                 RefreshGraph();
             }
