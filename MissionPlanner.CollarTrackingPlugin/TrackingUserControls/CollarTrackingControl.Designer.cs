@@ -47,8 +47,8 @@
             this.CollarScanProgressBar = new System.Windows.Forms.ProgressBar();
             this.IFGainButton = new System.Windows.Forms.Button();
             this.IFGainTextBox = new System.Windows.Forms.RichTextBox();
-            this.polarChartControl1 = new MissionPlanner.CollarTrackingPlugin.TrackingUserControls.PolarChartControl();
             this.CollarTrackingDetectionMethodCombo = new System.Windows.Forms.ComboBox();
+            this.polarChartControl1 = new MissionPlanner.CollarTrackingPlugin.TrackingUserControls.PolarChartControl();
             this.CollarTrackingControlPanel.SuspendLayout();
             this.CollarTrackingControlGroupBox.SuspendLayout();
             this.CollarTrackingControlGroupBoxPanel.SuspendLayout();
@@ -128,7 +128,7 @@
             this.CollarTrackingControlPanel.SetRowSpan(this.LNAGainTextBox, 3);
             this.LNAGainTextBox.Size = new System.Drawing.Size(52, 42);
             this.LNAGainTextBox.TabIndex = 10;
-            this.LNAGainTextBox.Text = "9";
+            this.LNAGainTextBox.Text = "20";
             // 
             // LNAGainButton
             // 
@@ -387,18 +387,6 @@
             this.IFGainTextBox.TabIndex = 6;
             this.IFGainTextBox.Text = "1";
             // 
-            // polarChartControl1
-            // 
-            this.polarChartControl1.AutoSize = true;
-            this.CollarTrackingControlPanel.SetColumnSpan(this.polarChartControl1, 14);
-            this.polarChartControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.polarChartControl1.Location = new System.Drawing.Point(174, 48);
-            this.polarChartControl1.Margin = new System.Windows.Forms.Padding(0);
-            this.polarChartControl1.Name = "polarChartControl1";
-            this.CollarTrackingControlPanel.SetRowSpan(this.polarChartControl1, 14);
-            this.polarChartControl1.Size = new System.Drawing.Size(423, 224);
-            this.polarChartControl1.TabIndex = 11;
-            // 
             // CollarTrackingDetectionMethodCombo
             // 
             this.CollarTrackingControlPanel.SetColumnSpan(this.CollarTrackingDetectionMethodCombo, 14);
@@ -412,6 +400,18 @@
             this.CollarTrackingControlPanel.SetRowSpan(this.CollarTrackingDetectionMethodCombo, 2);
             this.CollarTrackingDetectionMethodCombo.Size = new System.Drawing.Size(417, 21);
             this.CollarTrackingDetectionMethodCombo.TabIndex = 12;
+            // 
+            // polarChartControl1
+            // 
+            this.polarChartControl1.AutoSize = true;
+            this.CollarTrackingControlPanel.SetColumnSpan(this.polarChartControl1, 14);
+            this.polarChartControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.polarChartControl1.Location = new System.Drawing.Point(174, 48);
+            this.polarChartControl1.Margin = new System.Windows.Forms.Padding(0);
+            this.polarChartControl1.Name = "polarChartControl1";
+            this.CollarTrackingControlPanel.SetRowSpan(this.polarChartControl1, 14);
+            this.polarChartControl1.Size = new System.Drawing.Size(423, 224);
+            this.polarChartControl1.TabIndex = 11;
             // 
             // CollarTrackingControl
             // 

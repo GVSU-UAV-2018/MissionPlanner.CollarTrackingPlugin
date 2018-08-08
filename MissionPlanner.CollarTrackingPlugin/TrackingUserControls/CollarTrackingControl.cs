@@ -269,7 +269,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             try
             {
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(IFGainTextBox.Text)))
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkMixerGain(Convert.ToInt32(MixerGainTextBox.Text)))
                 {
                     MessageBox.Show("Mixer Gain set to " + MixerGainTextBox.Text);
                 }
@@ -294,7 +294,7 @@ namespace MissionPlanner.CollarTrackingPlugin
         {
             try
             {
-                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(IFGainTextBox.Text)))
+                if (MavLinkRDFCommunication.MavLinkRDFCommunication.SendMavLinkLNAGain(Convert.ToInt32(LNAGainTextBox.Text)))
                 {
                     MessageBox.Show("LNA Gain set to " + LNAGainTextBox.Text);
                 }
